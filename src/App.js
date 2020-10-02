@@ -1,16 +1,18 @@
 import React from 'react';
 import {Router} from "@reach/router";
-import Editor from "./features/editor/Editor";
 import Wizard from "./features/wizard/Wizard";
-import CustomEditor from "./features/custom-editor/CustomEditor";
+import Editor from "./features/editor/Editor";
+import {Provider} from 'react-redux';
+import store from "./libs/rematch";
 
 function App() {
     return (
-        <Router>
-            <Editor path='editor'/>
-            <Wizard path='wizard'/>
-            <CustomEditor path='custom-editor'/>
-        </Router>
+        <Provider store={store}>
+            <Router>
+                <Editor path='editor'/>
+                <Wizard path='wizard'/>
+            </Router>
+        </Provider>
     );
 }
 

@@ -1,36 +1,35 @@
 import React from 'react';
-import MainLayout from "../layouts/MainLayout";
-import LeftBar from "./LeftBar";
-// import {Row, Col} from 'react-flexbox-grid';
-
-const data = `{
-    "text": "Press [h] to see 'help'",
-    "denotations": [
-        {
-            "span": {
-                "begin":6,
-                "end":9
-            },
-            "obj":"Key"
-        },
-        {
-            "span": {
-                "begin":17,
-                "end":23
-            },
-            "obj": "Page"
-        }
-    ]
-}`;
+import MainLayout from "../../layouts/MainLayout";
+import LeftBar from "./sub/left-bar/LeftBar";
+import {createUseStyles} from "react-jss";
+import RightBar from "./sub/right-bar/RightBar";
+import {useSelector} from "react-redux";
+import {minWidth as rightBarWidth} from "./sub/right-bar/styles";
+import {width as leftBarWidth} from "./sub/left-bar/styles";
 
 function Editor() {
-    return <MainLayout>
-        <LeftBar/>
+    const c = useStyles();
+    const sampleText = useSelector(s => s.app.sampleText);
 
-        <div className="textae-editor" mode='edit'>
-            {data}
-        </div>,
-    </MainLayout>;
+    return (
+        <MainLayout>
+            <LeftBar/>
+            <div className={c.content}>
+                {sampleText}
+            </div>
+            <RightBar/>
+        </MainLayout>
+    );
 }
+
+const useStyles = createUseStyles({
+    content: {
+        padding: 20,
+        marginLeft: leftBarWidth,
+        marginRight: rightBarWidth,
+        whiteSpace: "pre-line",
+        fontSize: 16
+    }
+});
 
 export default Editor;

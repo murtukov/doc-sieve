@@ -1,5 +1,5 @@
 import React from 'react';
-import Topbar from "../generic/Topbar";
+import Topbar from "../features/generic-ui/Topbar";
 import {createUseStyles} from "react-jss";
 
 function MainLayout({children}) {

@@ -27,13 +27,6 @@ function Topbar() {
                     onClick={() => navigate('wizard')}
                     minimal
                 />
-                <Button
-                    icon="document"
-                    text="Custom Editor"
-                    active={match.uri === '/custom-editor'}
-                    onClick={() => navigate('custom-editor')}
-                    minimal
-                />
             </NavbarGroup>
         </Navbar>
     );
