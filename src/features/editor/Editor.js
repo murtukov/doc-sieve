@@ -28,8 +28,15 @@ const useStyles = createUseStyles({
         marginLeft: leftBarWidth,
         marginRight: rightBarWidth,
         whiteSpace: "pre-line",
-        fontSize: 16
-    }
+        fontSize: 16,
+        overflow: "auto",
+        '&::-webkit-scrollbar': {
+            width: 8,
+        },
+        '&::-webkit-scrollbar-thumb': {
+            background: '#a5a5a5',
+        },
+    },
 });
 
 export default Editor;

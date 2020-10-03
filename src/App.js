@@ -1,5 +1,5 @@
 import React from 'react';
-import {Router} from "@reach/router";
+import {Redirect, Router} from "@reach/router";
 import Wizard from "./features/wizard/Wizard";
 import Editor from "./features/editor/Editor";
 import {Provider} from 'react-redux';
@@ -9,6 +9,7 @@ function App() {
     return (
         <Provider store={store}>
             <Router>
+                <Redirect from='/' to='editor' noThrow/>
                 <Editor path='editor'/>
                 <Wizard path='wizard'/>
             </Router>

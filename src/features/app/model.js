@@ -4,6 +4,7 @@ const app = {
     state: {
         sampleText,
         entities: [],
+        tags: [],
     },
     reducers: {},
     effects: {}

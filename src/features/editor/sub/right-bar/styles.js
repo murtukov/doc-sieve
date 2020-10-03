@@ -1,4 +1,5 @@
 import {createUseStyles} from "react-jss";
+import {Colors} from "@blueprintjs/core";
 
 export const minWidth = 300;
 
@@ -9,6 +10,21 @@ export default createUseStyles({
         backgroundColor: "#f3f3fb",
         position: "fixed",
         right: 0,
-        padding: 10,
+        display: "flex",
+        flexDirection: "column"
+    },
+    placeholder: {
+        color: Colors.GRAY3,
+        textAlign: "center"
+    },
+    block: {
+        flexGrow: 1
+    },
+    title: {
+        padding: '5px 10px',
+        backgroundColor: Colors.LIGHT_GRAY3,
+        justifyContent: "space-between",
+        display: "flex",
+        alignItems: 'center'
     }
 });
