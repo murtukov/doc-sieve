@@ -6,7 +6,15 @@ const app = {
         entities: [],
         tags: [],
     },
-    reducers: {},
+    reducers: {
+        addEntity: (state, newEntity) => ({
+            ...state,
+            entities: [
+                ...state.entities,
+                newEntity
+            ]
+        })
+    },
     effects: {}
 };
 

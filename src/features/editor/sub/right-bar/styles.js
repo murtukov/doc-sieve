@@ -22,9 +22,10 @@ export default createUseStyles({
     },
     title: {
         padding: '5px 10px',
-        backgroundColor: Colors.LIGHT_GRAY3,
+        backgroundColor: '#e0e0e4',
         justifyContent: "space-between",
         display: "flex",
-        alignItems: 'center'
+        alignItems: 'center',
+        height: 40
     }
 });

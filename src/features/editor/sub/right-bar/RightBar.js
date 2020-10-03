@@ -1,46 +1,47 @@
-import React from 'react';
+import React, {useState} from 'react';
 import styles from './styles';
-import {Button, H4, Position, Tooltip} from "@blueprintjs/core";
+import {Button, Position, Tooltip} from "@blueprintjs/core";
 import {useSelector} from "react-redux";
 import EntityRow from "./sub/EntityRow";
 import TagRow from "./sub/TagRow";
+import Block from "./sub/Block";
+import CreateDialog from "./sub/CreateDialog";
 
 function RightBar() {
     const c = styles();
     const {entities, tags} = useSelector(s => s.app);
+    const [isDialogOpen, updateDialogOpen] = useState(false);
 
-    const renderEntities = () =>
-        entities.map((e, i) => <EntityRow key={i} data={e}/>);
+    const getTags = () => tags.map((tag, i) => <TagRow key={i} data={tag}/>);
+    const getEntities = () => entities.map((e, i) => <EntityRow key={i} data={e}/>);
+    const getTagPlaceholder = () => <p className={c.placeholder}>No tags yet!</p>;
+    const getEntityPlaceholder = () => <p className={c.placeholder}>No entities yet!</p>;
 
-    const renderEntityPlaceholder = () =>
-        <p className={c.placeholder}>No entities yet!</p>;
+    const addNewEntityBtn = (
+        <Tooltip content='Create new entity' position={Position.BOTTOM}>
+            <Button icon='plus' minimal onClick={openDialog}/>
+        </Tooltip>
+    );
 
-    const renderTags = () =>
-        tags.map((tag, i) => <TagRow key={i} data={tag}/>);
+    function openDialog() {
+        updateDialogOpen(true);
+    }
 
-    const renderTagPlaceholder = () =>
-        <p className={c.placeholder}>No tags yet!</p>;
-
+    function closeDialog() {
+        updateDialogOpen(false);
+    }
 
     return (
         <div className={c.root}>
-            <div className={c.block}>
-                <H4 className={c.title}>
-                    Entities
-                    <Tooltip content='Create new entity' position={Position.BOTTOM}>
-                        <Button icon='plus' minimal/>
-                    </Tooltip>
-                </H4>
-                {entities.length > 0 ? renderEntities() : renderEntityPlaceholder()}
-            </div>
+            <CreateDialog isOpen={isDialogOpen} onClose={closeDialog}/>
 
-            <div className={c.block}>
-                <H4 className={c.title}>
-                    Tags
-                    <Button icon='plus' minimal style={{visibility: "hidden"}}/>
-                </H4>
-                {tags.length > 0 ? renderTags() : renderTagPlaceholder()}
-            </div>
+            <Block title='Entities' actions={addNewEntityBtn}>
+                {entities.length > 0 ? getEntities() : getEntityPlaceholder()}
+            </Block>
+
+            <Block title='Tags'>
+                {tags.length > 0 ? getTags() : getTagPlaceholder()}
+            </Block>
         </div>
     );
 }

@@ -1,12 +1,15 @@
 import React from 'react';
 
 function EntityRow({data}) {
-    // const {color, name, description} = data;
+    const {bgColor, textColor, name, description} = data;
 
     return (
-        <div>
-
-        </div>
+        <span>
+            <span>{bgColor}</span>
+            <span>{textColor}</span>
+            <span>{name}</span>
+            <span>{description}</span>
+        </span>
     );
 }
 
