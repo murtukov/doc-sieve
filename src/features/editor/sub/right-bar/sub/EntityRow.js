@@ -1,15 +1,25 @@
 import React from 'react';
+import {SketchPicker} from 'react-color';
+import {Button, Icon, Popover, Position} from "@blueprintjs/core";
 
 function EntityRow({data}) {
-    const {bgColor, textColor, name, description} = data;
+    const {bgColor, textColor, name} = data;
 
     return (
-        <span>
-            <span>{bgColor}</span>
-            <span>{textColor}</span>
+        <div>
+            <Popover position={Position.LEFT_TOP}>
+                <Button
+                    minimal
+                    icon={<Icon icon='full-circle' color={bgColor}/>}
+                />
+                <SketchPicker
+                    color={bgColor}
+                    // onChange={handleColorChange('textColor')}
+                />
+            </Popover>
             <span>{name}</span>
-            <span>{description}</span>
-        </span>
+            <Button icon='edit' minimal/>
+        </div>
     );
 }
 
