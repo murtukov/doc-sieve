@@ -36,12 +36,8 @@ const rawContent = {
             ),
             type: 'unstyled',
             entityRanges: [{offset: 30, length: 13, key: 'third'}],
-            data: {
-
-            }
         },
     ],
-
     entityMap: {
         first: {
             type: 'TOKEN',
@@ -114,7 +110,7 @@ class EntityEditorExample extends React.Component {
 }
 
 function getEntityStrategy(mutability) {
-    return function(contentBlock, callback, contentState) {
+    return (contentBlock, callback, contentState) => {
         contentBlock.findEntityRanges(
             (character) => {
                 const entityKey = character.getEntity();

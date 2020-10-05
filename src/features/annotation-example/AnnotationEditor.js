@@ -4,7 +4,7 @@ import 'draft-js/dist/Draft.css';
 import {createUseStyles} from "react-jss";
 import {useSelector} from "react-redux";
 
-function DraftEditor() {
+function AnnotationEditor() {
     const {sampleText} = useSelector(state => state.app);
     const editorRef = useRef(null);
     const urlRef = useRef(null);
@@ -16,8 +16,8 @@ function DraftEditor() {
     useEffect(() => {
         const decorator = new CompositeDecorator([
             {
-                strategy: findTokenEntities,
-                component: Token,
+                strategy: findAnnotationEntities,
+                component: Annotation,
             },
         ]);
         setEditorState(EditorState.createWithText(sampleText, decorator));
@@ -32,14 +32,14 @@ function DraftEditor() {
         editorRef.current.focus();
     }
 
-    function confirmLink(e) {
+    function confirmLink(e, color) {
         e.preventDefault();
         const contentState = editorState.getCurrentContent();
 
         const contentStateWithEntity = contentState.createEntity(
-            'TOKEN',
+            'ANNOTATION',
             'MUTABLE',
-            {url: urlValue}
+            {type: 'SECTION', color}
         );
 
         const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
@@ -71,13 +71,13 @@ function DraftEditor() {
         }
     }
 
-    function findTokenEntities(contentBlock, callback, contentState) {
+    function findAnnotationEntities(contentBlock, callback, contentState) {
         contentBlock.findEntityRanges(
             (character) => {
                 const entityKey = character.getEntity();
                 return (
                     entityKey !== null &&
-                    contentState.getEntity(entityKey).getType() === 'TOKEN'
+                    contentState.getEntity(entityKey).getType() === 'ANNOTATION'
                 );
             },
             callback
@@ -88,10 +88,10 @@ function DraftEditor() {
         setUrlValue(e.target.value);
     }
 
-    const Token = (props) => {
-        // const {url} = props.contentState.getEntity(props.entityKey).getData();
+    const Annotation = (props) => {
+        const {color} = props.contentState.getEntity(props.entityKey).getData();
         return (
-            <span className='tag-test' style={{backgroundColor: "#90ee907d"}}>
+            <span className='annotation' style={{backgroundColor: color}}>
                 {props.children}
             </span>
         );
@@ -123,9 +123,14 @@ function DraftEditor() {
             </div>
             <div className={c.buttons}>
                 <button
-                    onMouseDown={confirmLink}
+                    onMouseDown={(e) => confirmLink(e, 'red')}
                     style={{marginRight: 10}}>
-                    Add Tag
+                    Add red tag
+                </button>
+                <button
+                    onMouseDown={(e) => confirmLink(e, 'lightgreen')}
+                    style={{marginRight: 10}}>
+                    Add green tag
                 </button>
                 <button onMouseDown={removeToken}>
                     Remove Tag
@@ -183,4 +188,4 @@ const useStyles = createUseStyles({
     },
 });
 
-export default DraftEditor;
+export default AnnotationEditor;
