@@ -14,7 +14,7 @@ function LeftBar() {
             return;
         }
 
-        dispatch.app.createTag(selection);
+        // dispatch.app.createTag(selection);
     }
 
     return (

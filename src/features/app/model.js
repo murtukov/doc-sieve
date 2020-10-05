@@ -4,7 +4,13 @@ const app = {
     state: {
         sampleText,
         entities: [],
-        tags: [],
+        tags: [
+            {
+                color: "lightgreen",
+                offset: {"start": 45, "end": 67},
+                type: "section"
+            }
+        ],
     },
     reducers: {
         addEntity: (state, newEntity) => ({

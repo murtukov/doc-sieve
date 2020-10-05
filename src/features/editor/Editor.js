@@ -12,22 +12,22 @@ function Editor() {
     const {sampleText, tags} = useSelector(s => s.app);
     const content = useRef(null);
 
-    useEffect(() => {
-        console.log(tags);
-        const ranges = [];
-        for (let tag of tags) {
-            let range = new Range();
-            let box = document.getElementById('content');
-            range.setStart(box.firstChild, tag.offset.start);
-            range.setEnd(box.firstChild, tag.offset.end);
-            ranges.push(range);
-        }
-
-        for (let range of ranges) {
-            let h1 = document.createElement('h1');
-            range.surroundContents(h1);
-        }
-    }, [])
+    // useEffect(() => {
+    //     console.log(tags);
+    //     const ranges = [];
+    //     for (let tag of tags) {
+    //         let range = new Range();
+    //         let box = document.getElementById('content');
+    //         range.setStart(box.firstChild, tag.offset.start);
+    //         range.setEnd(box.firstChild, tag.offset.end);
+    //         ranges.push(range);
+    //     }
+    //
+    //     for (let range of ranges) {
+    //         let h1 = document.createElement('h1');
+    //         range.surroundContents(h1);
+    //     }
+    // }, [])
 
     return (
         <MainLayout>
