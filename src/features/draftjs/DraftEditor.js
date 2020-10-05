@@ -2,8 +2,10 @@ import React, {useEffect, useRef, useState} from 'react';
 import {Editor, EditorState, RichUtils, CompositeDecorator, convertToRaw} from 'draft-js';
 import 'draft-js/dist/Draft.css';
 import {createUseStyles} from "react-jss";
+import {useSelector} from "react-redux";
 
 function DraftEditor() {
+    const {sampleText} = useSelector(state => state.app);
     const editorRef = useRef(null);
     const urlRef = useRef(null);
     const c = useStyles();
@@ -14,11 +16,11 @@ function DraftEditor() {
     useEffect(() => {
         const decorator = new CompositeDecorator([
             {
-                strategy: findLinkEntities,
-                component: Link,
+                strategy: findTokenEntities,
+                component: Token,
             },
         ]);
-        setEditorState(EditorState.createEmpty(decorator));
+        setEditorState(EditorState.createWithText(sampleText, decorator));
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     function logState() {
@@ -30,40 +32,16 @@ function DraftEditor() {
         editorRef.current.focus();
     }
 
-    function promptForLink(e) {
-        e.preventDefault();
-
-        const selection = editorState.getSelection();
-
-        if (!selection.isCollapsed()) {
-            const contentState = editorState.getCurrentContent();
-            const startKey = editorState.getSelection().getStartKey();
-            const startOffset = editorState.getSelection().getStartOffset();
-            const blockWithLinkAtBeginning = contentState.getBlockForKey(startKey);
-            const linkKey = blockWithLinkAtBeginning.getEntityAt(startOffset);
-
-            let url = '';
-            if (linkKey) {
-                const linkInstance = contentState.getEntity(linkKey);
-                url = linkInstance.getData().url;
-            }
-
-            setShowUrlInput(true);
-            setUrlValue(url);
-
-            // rework this
-            setTimeout(() => urlRef.current.focus(), 500)
-        }
-    }
-
     function confirmLink(e) {
         e.preventDefault();
         const contentState = editorState.getCurrentContent();
+
         const contentStateWithEntity = contentState.createEntity(
-            'LINK',
+            'TOKEN',
             'MUTABLE',
             {url: urlValue}
         );
+
         const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
         const newEditorState = EditorState.set(editorState, { currentContent: contentStateWithEntity });
 
@@ -84,7 +62,7 @@ function DraftEditor() {
         }
     }
 
-    function removeLink(e) {
+    function removeToken(e) {
         e.preventDefault();
         const selection = editorState.getSelection();
 
@@ -93,13 +71,13 @@ function DraftEditor() {
         }
     }
 
-    function findLinkEntities(contentBlock, callback, contentState) {
+    function findTokenEntities(contentBlock, callback, contentState) {
         contentBlock.findEntityRanges(
             (character) => {
                 const entityKey = character.getEntity();
                 return (
                     entityKey !== null &&
-                    contentState.getEntity(entityKey).getType() === 'LINK'
+                    contentState.getEntity(entityKey).getType() === 'TOKEN'
                 );
             },
             callback
@@ -110,12 +88,12 @@ function DraftEditor() {
         setUrlValue(e.target.value);
     }
 
-    const Link = (props) => {
-        const {url} = props.contentState.getEntity(props.entityKey).getData();
+    const Token = (props) => {
+        // const {url} = props.contentState.getEntity(props.entityKey).getData();
         return (
-            <a href={url} className={c.link}>
+            <span className='tag-test' style={{backgroundColor: "#90ee907d"}}>
                 {props.children}
-            </a>
+            </span>
         );
     };
 
@@ -145,12 +123,12 @@ function DraftEditor() {
             </div>
             <div className={c.buttons}>
                 <button
-                    onMouseDown={promptForLink}
+                    onMouseDown={confirmLink}
                     style={{marginRight: 10}}>
-                    Add Link
+                    Add Tag
                 </button>
-                <button onMouseDown={removeLink}>
-                    Remove Link
+                <button onMouseDown={removeToken}>
+                    Remove Tag
                 </button>
             </div>
             {urlInput}
