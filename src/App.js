@@ -8,6 +8,11 @@ import AnnotationEditor from "./features/annotation-example/AnnotationEditor";
 import EntityEditorExample from "./features/entity-example/EntityExample";
 import TweetExample from "./features/tweet-example/TweetExample";
 import RichExample from "./features/rich-example/RichExample";
+import ColorfulExample from "./features/colorful-example/ColorfulExample";
+import result from "./features/app/schema";
+import TreeExample from "./features/tree-example/TreeExample";
+
+console.log(JSON.stringify(result));
 
 function App() {
     return (
@@ -20,6 +25,8 @@ function App() {
                 <EntityEditorExample path='entity-example'/>
                 <TweetExample path='tweet-example'/>
                 <RichExample path='rich-example'/>
+                <ColorfulExample path='colorful-example'/>
+                <TreeExample path='tree-example'/>
             </Router>
         </Provider>
     );

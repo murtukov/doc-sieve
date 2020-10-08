@@ -22,7 +22,7 @@ function CreateDialog({isOpen, onClose}) {
     }
 
     function handleSaveClick() {
-        dispatch.app.addEntity(state);
+        dispatch.app.addConcept(state);
         onClose();
     }
 
@@ -30,7 +30,7 @@ function CreateDialog({isOpen, onClose}) {
         <Dialog isOpen={isOpen} onClose={onClose} canEscapeKeyClose>
             <div className={Classes.DIALOG_HEADER}>
                 <Icon icon='clean'/>
-                <H4>Create new entity</H4>
+                <H4>Create new concept</H4>
                 <Button icon='cross' minimal onClick={onClose}/>
             </div>
 

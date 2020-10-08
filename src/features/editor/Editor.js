@@ -6,10 +6,11 @@ import RightBar from "./sub/right-bar/RightBar";
 import {useSelector} from "react-redux";
 import {minWidth as rightBarWidth} from "./sub/right-bar/styles";
 import {width as leftBarWidth} from "./sub/left-bar/styles";
+import RichExample from "../rich-example/RichExample";
 
 function Editor() {
     const c = useStyles();
-    const {sampleText, tags} = useSelector(s => s.app);
+    const {sampleText, annotations} = useSelector(s => s.app);
     const content = useRef(null);
 
     // useEffect(() => {
@@ -33,7 +34,7 @@ function Editor() {
         <MainLayout>
             <LeftBar/>
             <div ref={content} id='content' className={c.content}>
-                {sampleText}
+                <RichExample/>
             </div>
             <RightBar/>
         </MainLayout>
@@ -42,7 +43,6 @@ function Editor() {
 
 const useStyles = createUseStyles({
     content: {
-        padding: 20,
         marginLeft: leftBarWidth,
         marginRight: rightBarWidth,
         whiteSpace: "pre-line",
