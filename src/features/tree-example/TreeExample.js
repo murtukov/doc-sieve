@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import styled from 'styled-components';
 import Tree, {mutateTree, moveItemOnTree} from '@atlaskit/tree';
 import treeWithTwoBranches from './sampleData';
+import {Button} from "@blueprintjs/core";
 
 const PADDING_PER_LEVEL = 16;
 
@@ -56,7 +57,30 @@ function PureTree() {
         setTree(newTree);
     }
 
-    return (
+    function addNew() {
+        const newTree = {
+            rootId: tree.rootId,
+            items: {
+                ...tree.items,
+                '1-3': {
+                    id: '1-3',
+                    children: [],
+                    hasChildren: false,
+                    isExpanded: false,
+                    isChildrenLoading: false,
+                    data: {
+                        title: 'Child 1-3',
+                    },
+                },
+            },
+        };
+
+        console.log(newTree);
+
+        setTree(mutateTree(newTree, '1', { children: ['1-1', '1-2', '1-3'] }));
+    }
+
+    return <>
         <Tree
             tree={tree}
             renderItem={renderItem}
@@ -66,7 +90,8 @@ function PureTree() {
             offsetPerLevel={PADDING_PER_LEVEL}
             isDragEnabled
         />
-    );
+        <Button text='Add' onClick={addNew}/>
+    </>;
 }
 
 export default PureTree;
