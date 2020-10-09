@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {Button, Classes, Dialog, FormGroup, H4, Icon, InputGroup, Intent, Popover, TextArea} from "@blueprintjs/core";
 import {SketchPicker} from 'react-color';
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 
 function CreateDialog({isOpen, onClose}) {
     const [state, update] = useState({
@@ -10,18 +10,19 @@ function CreateDialog({isOpen, onClose}) {
         bgColor: 'lightgreen',
         textColor: 'black'
     });
-
+    const conceptTree = useSelector(s => s.app.conceptTree);
     const dispatch = useDispatch();
-
-    const handleFieldChange = ({target}) => {
-        update({...state, [target.name]: target.value});
-    }
 
     const handleColorChange = field => color => {
         update({...state, [field]: color.hex});
     }
 
+    function handleFieldChange({target}) {
+        update({...state, [target.name]: target.value});
+    }
+
     function handleSaveClick() {
+
         dispatch.app.addConcept(state);
         onClose();
     }

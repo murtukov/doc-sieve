@@ -9,10 +9,7 @@ import EntityEditorExample from "./features/entity-example/EntityExample";
 import TweetExample from "./features/tweet-example/TweetExample";
 import RichExample from "./features/rich-example/RichExample";
 import ColorfulExample from "./features/colorful-example/ColorfulExample";
-import result from "./features/app/schema";
-import TreeExample from "./features/tree-example/TreeExample";
-
-console.log(JSON.stringify(result));
+import TreeExample from "./features/tree-example/ConceptTree";
 
 function App() {
     return (

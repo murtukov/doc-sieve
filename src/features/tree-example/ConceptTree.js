@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
 import styled from 'styled-components';
 import Tree, {mutateTree, moveItemOnTree} from '@atlaskit/tree';
-import treeWithTwoBranches from './sampleData';
 import {Button} from "@blueprintjs/core";
+import {useDispatch, useSelector} from "react-redux";
 
 const PADDING_PER_LEVEL = 16;
 
@@ -13,20 +13,17 @@ const PreTextIcon = styled.span`
   cursor: pointer;
 `;
 
-function getIcon(item, onExpand, onCollapse) {
-    if (item.children.length > 0) {
-        return item.isExpanded ?
-            <PreTextIcon onClick={() => onCollapse(item.id)}>-</PreTextIcon>
-            :
-            <PreTextIcon onClick={() => onExpand(item.id)}>+</PreTextIcon>
-        ;
+function ConceptTree() {
+    const {conceptTree: tree} = useSelector(s => s.app)
+    const dispatch = useDispatch();
+
+    if (!tree) {
+        return null;
     }
 
-    return <PreTextIcon>&bull;</PreTextIcon>;
-}
-
-function PureTree() {
-    const [tree, setTree] = useState(treeWithTwoBranches);
+    function setTree(newTree) {
+        dispatch.app.setConceptTree(newTree);
+    }
 
     function renderItem({item, onExpand, onCollapse, provided}) {
         return (
@@ -36,9 +33,21 @@ function PureTree() {
                 {...provided.dragHandleProps}
             >
                 <span>{getIcon(item, onExpand, onCollapse)}</span>
-                <span>{item.data ? item.data.title : ''}</span>
+                <span>{item.data?.name || ''}</span>
             </div>
         );
+    }
+
+    function getIcon(item, onExpand, onCollapse) {
+        if (item.children.length > 0) {
+            return item.isExpanded ?
+                <PreTextIcon onClick={() => onCollapse(item.id)}>-</PreTextIcon>
+                :
+                <PreTextIcon onClick={() => onExpand(item.id)}>+</PreTextIcon>
+                ;
+        }
+
+        return <PreTextIcon>&bull;</PreTextIcon>;
     }
 
     function onExpand(itemId) {
@@ -75,8 +84,6 @@ function PureTree() {
             },
         };
 
-        console.log(newTree);
-
         setTree(mutateTree(newTree, '1', { children: ['1-1', '1-2', '1-3'] }));
     }
 
@@ -94,4 +101,4 @@ function PureTree() {
     </>;
 }
 
-export default PureTree;
+export default ConceptTree;

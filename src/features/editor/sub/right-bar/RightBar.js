@@ -6,6 +6,7 @@ import Concept from "./sub/Concept";
 import TagRow from "./sub/TagRow";
 import Block from "./sub/Block";
 import CreateDialog from "./sub/CreateDialog";
+import ConceptTree from "../../../tree-example/ConceptTree";
 
 function RightBar() {
     const c = styles();
@@ -16,8 +17,8 @@ function RightBar() {
     const getTags = () => annotations.map((tag, i) => <TagRow key={i} data={tag}/>);
 
     const getTagPlaceholder = () => <p className={c.placeholder}>No tags yet!</p>;
-    const getConcepts = () => ontology.map((e, i) => <Concept key={i} data={e} index={i}/>);
-    const getConceptPlaceholder = () => <p className={c.placeholder}>No concepts yet!</p>;
+    // const getConcepts = () => ontology.map((e, i) => <Concept key={i} data={e} index={i}/>);
+    // const getConceptPlaceholder = () => <p className={c.placeholder}>No concepts yet!</p>;
 
     const addNewEntityBtn = (
         <Tooltip content='Create new entity' position={Position.BOTTOM}>
@@ -42,7 +43,8 @@ function RightBar() {
             </Block>
 
             <Block title='Ontology' actions={addNewEntityBtn}>
-                {ontology.length > 0 ? getConcepts() : getConceptPlaceholder()}
+                {/*{ontology.length > 0 ? getConcepts() : getConceptPlaceholder()}*/}
+                <ConceptTree/>
             </Block>
         </div>
     );

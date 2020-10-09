@@ -1,4 +1,5 @@
 import sampleText from './sample-text';
+import {mutateTree} from "@atlaskit/tree";
 
 const app = {
     state: {
@@ -11,98 +12,112 @@ const app = {
                 type: "section"
             }
         ],
-        normalized: {
-            entities: {
-                nodes: {
-                    '0': {
-                        id: 0,
-                        hasCaret: true,
-                        icon: 'folder-close',
-                        label: 'Folder 0'
+        conceptTree: {
+            rootId: 0,
+            items: {
+                0: {
+                    id: 0,
+                    children: [1, 2],
+                    hasChildren: true,
+                    isExpanded: true,
+                    isChildrenLoading: false,
+                    data: {
+                        title: 'root',
                     },
-                    '1': {
-                        id: 1,
-                        icon: 'folder-close',
-                        isExpanded: true,
-                        label: "I'm a folder <3",
-                        childNodes: [
-                            2,
-                            3,
-                            4
-                        ]
+                },
+                1: {
+                    id: 1,
+                    children: [3, 4],
+                    hasChildren: true,
+                    isExpanded: true,
+                    isChildrenLoading: false,
+                    data: {
+                        title: 'First parent',
                     },
-                    '2': {
-                        id: 2,
-                        icon: 'folder-close',
-                        label: 'Super secret files',
-                        secondaryLabel: 'eye-icon',
-                        hasCaret: true,
-                        disabled: true
+                },
+                2: {
+                    id: 2,
+                    children: [5, 6],
+                    hasChildren: true,
+                    isExpanded: true,
+                    isChildrenLoading: false,
+                    data: {
+                        title: 'Second parent',
                     },
-                    '3': {
-                        id: 3,
-                        icon: 'tag-icon',
-                        label: 'Organic meditation gluten-free, sriracha VHS drinking vinegar beard man.'
+                },
+                3: {
+                    id: 3,
+                    children: [],
+                    hasChildren: false,
+                    isExpanded: false,
+                    isChildrenLoading: false,
+                    data: {
+                        title: 'Child one',
                     },
-                    '4': {
-                        id: 4,
-                        hasCaret: true,
-                        icon: 'folder-close',
-                        label: 'Folder 2',
-                        childNodes: [
-                            5,
-                            6,
-                            7
-                        ]
+                },
+                4: {
+                    id: 4,
+                    children: [],
+                    hasChildren: false,
+                    isExpanded: false,
+                    isChildrenLoading: false,
+                    data: {
+                        title: 'Child two',
                     },
-                    '5': {
-                        id: 5,
-                        label: 'No-Icon Item'
+                },
+                5: {
+                    id: 5,
+                    children: [],
+                    hasChildren: false,
+                    isExpanded: false,
+                    isChildrenLoading: false,
+                    data: {
+                        title: 'Child three',
                     },
-                    '6': {
-                        id: 6,
-                        icon: 'tag',
-                        label: 'Item 1'
+                },
+                6: {
+                    id: 6,
+                    children: [],
+                    hasChildren: false,
+                    isExpanded: false,
+                    isChildrenLoading: false,
+                    data: {
+                        title: 'Child four',
                     },
-                    '7': {
-                        id: 7,
-                        hasCaret: true,
-                        icon: 'folder-close',
-                        label: 'Folder 3',
-                        childNodes: [
-                            8,
-                            9
-                        ]
-                    },
-                    '8': {
-                        id: 8,
-                        icon: 'document',
-                        label: 'Item 0'
-                    },
-                    '9': {
-                        id: 9,
-                        icon: 'tag',
-                        label: 'Item 1'
-                    }
-                }
+                },
             },
-            result: {
-                nodes: [
-                    0,
-                    1,
-                    2
-                ]
-            }
         }
     },
     reducers: {
-        addConcept: (state, newConcept) => ({
-            ...state,
-            ontology: [
-                ...state.ontology,
-                newConcept
-            ]
-        }),
+        addConcept: (state, newConcept) => {
+            const tree = state.conceptTree;
+
+            const newTree = {
+                rootId: tree.rootId,
+                items: {
+                    ...tree.items,
+                    [newConcept.name]: {
+                        id: [newConcept.name],
+                        children: [],
+                        hasChildren: false,
+                        isExpanded: false,
+                        isChildrenLoading: false,
+                        data: newConcept,
+                    },
+                },
+            };
+
+            const newChildren = [
+                ...tree.items[newConcept.parentId || 'root'].children,
+                // new child id here
+                newConcept.name
+            ];
+
+            return ({
+                ...state,
+                conceptTree: mutateTree(newTree, newConcept.parentId || 'root', { children: newChildren })
+            });
+        },
         removeConcept: (state, conceptIdx) => ({
             ...state,
             ontology: [
@@ -110,6 +125,12 @@ const app = {
                 ...state.ontology.slice(conceptIdx + 1)
             ]
         }),
+        setConceptTree(state, newTree) {
+            return {
+                ...state,
+                conceptTree: newTree
+            };
+        },
         createTag(state, selection) {
             const start = Math.min(selection.anchorOffset, selection.focusOffset);
             const end = Math.max(selection.anchorOffset, selection.focusOffset);
@@ -129,5 +150,20 @@ const app = {
     },
     effects: {}
 };
+
+/**
+ * Pushes an object into another object. ID is generated automatically and copied into the 'item' object
+ */
+function push(object, item) {
+    for (let i = 0;; ++i) {
+        if (i in object) {
+            continue;
+        }
+
+        item.id = i;
+        object[i] = item;
+        return i;
+    }
+}
 
 export default app;
