@@ -26,8 +26,8 @@ function CreateDialog({isOpen, onClose}) {
             alert("Concept already exists");
             return;
         }
-
         dispatch.app.addConcept(state);
+        update({...state, name: '', description: ''});
         onClose();
     }
 
@@ -96,7 +96,8 @@ function CreateDialog({isOpen, onClose}) {
                         large
                         text='Save'
                         intent={Intent.SUCCESS}
-                        onClick={handleSaveClick}/>
+                        onClick={handleSaveClick}
+                    />
                 </div>
             </div>
         </Dialog>

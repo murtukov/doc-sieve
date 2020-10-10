@@ -1,8 +1,7 @@
 import React, {useState} from 'react';
 import styles from './styles';
-import {Button, Position, Radio, RadioGroup, Tooltip} from "@blueprintjs/core";
+import {Button, Position, Tooltip} from "@blueprintjs/core";
 import {useSelector} from "react-redux";
-import Concept from "./sub/Concept";
 import TagRow from "./sub/TagRow";
 import Block from "./sub/Block";
 import CreateDialog from "./sub/CreateDialog";
@@ -12,16 +11,14 @@ function RightBar() {
     const c = styles();
     const {annotations, ontology} = useSelector(s => s.app);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const [selectedTag, setSelectedTag] = useState();
+    // const [selectedTag, setSelectedTag] = useState();
 
     const getTags = () => annotations.map((tag, i) => <TagRow key={i} data={tag}/>);
 
     const getTagPlaceholder = () => <p className={c.placeholder}>No tags yet!</p>;
-    // const getConcepts = () => ontology.map((e, i) => <Concept key={i} data={e} index={i}/>);
-    // const getConceptPlaceholder = () => <p className={c.placeholder}>No concepts yet!</p>;
 
     const addNewEntityBtn = (
-        <Tooltip content='Create new entity' position={Position.BOTTOM}>
+        <Tooltip content='Create new concept' position={Position.BOTTOM}>
             <Button icon='plus' minimal onClick={openDialog}/>
         </Tooltip>
     );
