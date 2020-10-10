@@ -22,6 +22,10 @@ function CreateDialog({isOpen, onClose}) {
     }
 
     function handleSaveClick() {
+        if (state.name in conceptTree.items) {
+            alert("Concept already exists");
+            return;
+        }
 
         dispatch.app.addConcept(state);
         onClose();
