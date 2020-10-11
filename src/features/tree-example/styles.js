@@ -1,11 +1,13 @@
 import {createUseStyles} from "react-jss";
 
 export default createUseStyles({
-    item: {
+    item: ({isSelected}) => ({
         display: "flex",
         alignItems: "center",
-        margin: [2, 10, 2, 3]
-    },
+        margin: [2, 10, 2, 3],
+        border: isSelected ? [2, 'solid', 'deepskyblue'] : [2, 'solid', '#f3f3fb'],
+        borderRadius: 3
+    }),
     name: ({textColor, bgColor}) => ({
         color: textColor,
         backgroundColor: bgColor,

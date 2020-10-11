@@ -4,7 +4,7 @@ import {mutateTree} from "@atlaskit/tree";
 const app = {
     state: {
         sampleText,
-        ontology: [],
+        selectedConcept: null,
         annotations: [
             {
                 color: "lightgreen",
@@ -71,22 +71,28 @@ const app = {
                 conceptTree: newTree
             };
         },
-        createTag(state, selection) {
-            const start = Math.min(selection.anchorOffset, selection.focusOffset);
-            const end = Math.max(selection.anchorOffset, selection.focusOffset);
-
+        setSelectedConcept: (state, concept) => {
             return {
                 ...state,
-                annotations: [
-                    ...state.annotations,
-                    {
-                        color: 'lightgreen',
-                        offset: {start, end},
-                        type: 'section',
-                    }
-                ]
-            }
+                selectedConcept: concept
+            };
         }
+        // createTag(state, selection) {
+        //     const start = Math.min(selection.anchorOffset, selection.focusOffset);
+        //     const end = Math.max(selection.anchorOffset, selection.focusOffset);
+        //
+        //     return {
+        //         ...state,
+        //         annotations: [
+        //             ...state.annotations,
+        //             {
+        //                 color: 'lightgreen',
+        //                 offset: {start, end},
+        //                 type: 'section',
+        //             }
+        //         ]
+        //     }
+        // }
     },
     effects: {}
 };

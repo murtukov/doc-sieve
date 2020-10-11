@@ -9,7 +9,7 @@ import ConceptTree from "../../../tree-example/ConceptTree";
 
 function RightBar() {
     const c = styles();
-    const {annotations, ontology} = useSelector(s => s.app);
+    const {annotations} = useSelector(s => s.app);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     // const [selectedTag, setSelectedTag] = useState();
 

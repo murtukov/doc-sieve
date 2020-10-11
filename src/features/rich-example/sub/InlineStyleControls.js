@@ -9,7 +9,7 @@ const INLINE_STYLES = [
     {label: 'Custom', style: 'CUSTOM'},
 ];
 
-const InlineStyleControls = (props) => {
+function InlineStyleControls(props) {
     const currentStyle = props.editorState.getCurrentInlineStyle();
 
     return (
@@ -25,6 +25,6 @@ const InlineStyleControls = (props) => {
             )}
         </div>
     );
-};
+}
 
 export default InlineStyleControls;

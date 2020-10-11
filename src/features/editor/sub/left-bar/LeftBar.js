@@ -1,11 +1,12 @@
 import React from 'react';
 import {Button} from "@blueprintjs/core";
 import styles from './styles';
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 
 function LeftBar() {
     const c = styles();
     const dispatch = useDispatch();
+    const selectedConcept = useSelector(s => s.app.selectedConcept);
 
     function handleAddNewTagClick() {
         const selection = document.getSelection();
@@ -19,7 +20,12 @@ function LeftBar() {
 
     return (
         <div className={c.root}>
-            <Button icon='new-text-box' minimal onClick={handleAddNewTagClick}/>
+            <Button
+                icon='new-text-box'
+                onClick={handleAddNewTagClick}
+                disabled={!selectedConcept}
+                minimal
+            />
             <Button icon='floppy-disk' minimal/>
             <Button icon='edit' minimal/>
             <Button icon='text-highlight' minimal/>
