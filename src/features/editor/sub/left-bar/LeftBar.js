@@ -1,34 +1,33 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {Button} from "@blueprintjs/core";
 import styles from './styles';
-import {useDispatch, useSelector} from "react-redux";
+import {useSelector} from "react-redux";
+import {EditorContext} from "../../Editor";
 
 function LeftBar() {
     const c = styles();
-    const dispatch = useDispatch();
     const selectedConcept = useSelector(s => s.app.selectedConcept);
+    const {editorState, createAnnotation} = useContext(EditorContext);
 
-    function handleAddNewTagClick() {
-        const selection = document.getSelection();
-
-        if (selection.isCollapsed) {
-            return;
-        }
-
-        // dispatch.app.createTag(selection);
+    function handleSaveClick() {
+        console.log("==> Editor state: ", editorState);
     }
 
     return (
         <div className={c.root}>
             <Button
                 icon='new-text-box'
-                onClick={handleAddNewTagClick}
+                onClick={createAnnotation}
                 disabled={!selectedConcept}
                 minimal
             />
-            <Button icon='floppy-disk' minimal/>
-            <Button icon='edit' minimal/>
-            <Button icon='text-highlight' minimal/>
+            <Button
+                icon='floppy-disk'
+                onClick={handleSaveClick}
+                minimal
+            />
+            <Button icon='edit' minimal disabled/>
+            <Button icon='text-highlight' minimal disabled/>
         </div>
     );
 }

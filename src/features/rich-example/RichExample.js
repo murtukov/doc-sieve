@@ -1,15 +1,12 @@
-import React, {useEffect, useMemo, useRef, useState} from 'react';
-import {Editor, EditorState, RichUtils, getDefaultKeyBinding, CompositeDecorator, ContentBlock} from 'draft-js';
-import BlockStyleControls from "./sub/BlockStyleControls";
-import InlineStyleControls from "./sub/InlineStyleControls";
-import './styles.css';
+import React, {useContext, useEffect} from 'react';
+import {Editor, EditorState, RichUtils, getDefaultKeyBinding, CompositeDecorator} from 'draft-js';
 import {useSelector} from "react-redux";
-import {Button} from "@blueprintjs/core";
+import {EditorContext} from "../editor/Editor";
+import './styles.css';
 
 function RichExample() {
-    const {sampleText, selectedConcept} = useSelector(state => state.app);
-    const editorRef = useRef(null);
-    const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
+    const {sampleText} = useSelector(state => state.app);
+    const {editorState, setEditorState, editorRef} = useContext(EditorContext);
 
     useEffect(() => {
         const decorator = new CompositeDecorator([
@@ -20,31 +17,6 @@ function RichExample() {
         ]);
         setEditorState(EditorState.createWithText(sampleText, decorator));
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-    function createAnnotation(e) {
-        e.preventDefault();
-        const contentState = editorState.getCurrentContent();
-
-        const contentStateWithEntity = contentState.createEntity(
-            'ANNOTATION',
-            'MUTABLE',
-            selectedConcept
-        );
-
-        const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
-        const newEditorState = EditorState.set(editorState, { currentContent: contentStateWithEntity });
-
-        const entity = contentStateWithEntity.getEntity(entityKey);
-        console.log(entity);
-
-        setEditorState(RichUtils.toggleLink(
-            newEditorState,
-            newEditorState.getSelection(),
-            entityKey
-        ));
-
-        setTimeout(() => editorRef.current.focus(), 500)
-    }
 
     function findAnnotationEntities(contentBlock, callback, contentState) {
         contentBlock.findEntityRanges(
@@ -93,37 +65,9 @@ function RichExample() {
         return getDefaultKeyBinding(e);
     }
 
-    function toggleBlockType(blockType) {
-        setEditorState(RichUtils.toggleBlockType(editorState, blockType));
-    }
-
-    function toggleInlineStyle(inlineStyle) {
-        setEditorState(RichUtils.toggleInlineStyle(editorState, inlineStyle));
-    }
-
-    // If the user changes block type before entering any text, we can
-    // either style the placeholder or hide it. Let's just hide it now.
-    let className = 'RichEditor-editor';
-    let contentState = editorState.getCurrentContent();
-
-    if (!contentState.hasText()) {
-        if (contentState.getBlockMap().first().getType() !== 'unstyled') {
-            className += ' RichEditor-hidePlaceholder';
-        }
-    }
-
     return (
         <div className="RichEditor-root">
-            <Button text='Add annotation' onClick={createAnnotation}/>
-            <BlockStyleControls
-                editorState={editorState}
-                onToggle={toggleBlockType}
-            />
-            <InlineStyleControls
-                editorState={editorState}
-                onToggle={toggleInlineStyle}
-            />
-            <div className={className} onClick={() => editorRef.current.focus()}>
+            <div onClick={() => editorRef.current.focus()}>
                 <Editor
                     blockStyleFn={getBlockStyle}
                     customStyleMap={styleMap}

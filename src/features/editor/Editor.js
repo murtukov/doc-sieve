@@ -1,25 +1,59 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useRef, useState} from 'react';
 import MainLayout from "../../layouts/MainLayout";
 import LeftBar from "./sub/left-bar/LeftBar";
 import {createUseStyles} from "react-jss";
 import RightBar from "./sub/right-bar/RightBar";
-import {useSelector} from "react-redux";
 import {minWidth as rightBarWidth} from "./sub/right-bar/styles";
 import {width as leftBarWidth} from "./sub/left-bar/styles";
 import RichExample from "../rich-example/RichExample";
+import {EditorState, RichUtils} from "draft-js";
+import {useSelector} from "react-redux";
+
+export const EditorContext = React.createContext(null);
 
 function Editor() {
     const c = useStyles();
-    const {sampleText, annotations} = useSelector(s => s.app);
     const content = useRef(null);
+    const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
+    const {selectedConcept} = useSelector(state => state.app);
+    const editorRef = useRef(null);
+
+    function createAnnotation(e) {
+        e.preventDefault();
+        const contentState = editorState.getCurrentContent();
+
+        const contentStateWithEntity = contentState.createEntity(
+            'ANNOTATION',
+            'MUTABLE',
+            selectedConcept
+        );
+
+        const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
+        const newEditorState = EditorState.set(editorState, { currentContent: contentStateWithEntity });
+
+        setEditorState(RichUtils.toggleLink(
+            newEditorState,
+            newEditorState.getSelection(),
+            entityKey
+        ));
+
+        setTimeout(() => editorRef.current.focus(), 500)
+    }
 
     return (
         <MainLayout>
-            <LeftBar/>
-            <div ref={content} id='content' className={c.content}>
-                <RichExample/>
-            </div>
-            <RightBar/>
+            <EditorContext.Provider value={{
+                editorState,
+                setEditorState,
+                editorRef,
+                createAnnotation
+            }}>
+                <LeftBar/>
+                <div ref={content} id='content' className={c.content}>
+                    <RichExample/>
+                </div>
+                <RightBar/>
+            </EditorContext.Provider>
         </MainLayout>
     );
 }

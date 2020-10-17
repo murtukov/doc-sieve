@@ -10,6 +10,7 @@ import TweetExample from "./features/tweet-example/TweetExample";
 import RichExample from "./features/rich-example/RichExample";
 import ColorfulExample from "./features/colorful-example/ColorfulExample";
 import TreeExample from "./features/tree-example/ConceptTree";
+import Annotator from "./features/annotatorjs/Annotator";
 
 function App() {
     return (
@@ -24,6 +25,7 @@ function App() {
                 <RichExample path='rich-example'/>
                 <ColorfulExample path='colorful-example'/>
                 <TreeExample path='tree-example'/>
+                <Annotator path='annotator' />
             </Router>
         </Provider>
     );
