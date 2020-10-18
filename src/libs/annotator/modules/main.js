@@ -3,7 +3,7 @@ import textselector from 'annotator/src/ui/textselector';
 import Adder from '../ui/adder';
 import highlighter from '../ui/highlighter';
 import Editor from '../ui/editor';
-import viewer from '../ui/viewer';
+import Viewer from '../ui/viewer';
 import $ from 'jquery';
 
 const _t = util.gettext;
@@ -248,7 +248,7 @@ export function main(options = {}) {
             }
         });
 
-        s.viewer = new viewer.Viewer({
+        s.viewer = new Viewer({
             onEdit(ann) {
                 // Copy the interaction point from the shown viewer:
                 s.interactionPoint = $(s.viewer.element).css(['top', 'left']);
