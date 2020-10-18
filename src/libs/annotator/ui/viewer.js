@@ -441,27 +441,29 @@ Viewer.classes = {
 };
 
 // HTML templates for this.widget and this.item properties.
-Viewer.template = [
-    '<div class="annotator-outer annotator-viewer annotator-hide">',
-    '  <ul class="annotator-widget annotator-listing"></ul>',
-    '</div>'
-].join('\n');
+Viewer.template = `
+    <div class="annotator-outer annotator-viewer annotator-hide">
+        <ul class="annotator-widget annotator-listing"/>
+    </div>
+`;
 
-Viewer.itemTemplate = [
-    '<li class="annotator-annotation annotator-item">',
-    '  <span class="annotator-controls">',
-    '    <a href="#"',
-    '       title="' + _t('View as webpage') + '"',
-    '       class="annotator-link">' + _t('View as webpage') + '</a>',
-    '    <button type="button"',
-    '            title="' + _t('Edit') + '"',
-    '            class="annotator-edit">' + _t('Edit') + '</button>',
-    '    <button type="button"',
-    '            title="' + _t('Delete') + '"',
-    '            class="annotator-delete">' + _t('Delete') + '</button>',
-    '  </span>',
-    '</li>'
-].join('\n');
+Viewer.itemTemplate = `
+<li class="annotator-annotation annotator-item">
+    <span class="annotator-controls">
+        <a href="#" title="${_t('View as webpage')}" class="annotator-link">
+            ${_t('View as webpage')}
+        </a>
+        
+        <button type="button" title="${_t('Edit')}" class="annotator-edit">
+            ${_t('Edit')}
+        </button>
+        
+        <button type="button" title="${_t('Delete')}" class="annotator-delete">
+            ${_t('Delete')}
+        </button>
+    </span>
+</li>
+`;
 
 // Configuration options
 Viewer.options = {
@@ -501,7 +503,7 @@ Viewer.options = {
 // response to some viewer action (such as mousing over an annotator highlight
 // element).
 exports.standalone = function standalone(options) {
-    var widget;
+    let widget;
 
     if (typeof options === 'undefined' || options === null) {
         options = {};
@@ -509,8 +511,8 @@ exports.standalone = function standalone(options) {
 
     return {
         start: function (app) {
-            var ident = app.registry.getUtility('identityPolicy');
-            var authz = app.registry.getUtility('authorizationPolicy');
+            const ident = app.registry.getUtility('identityPolicy');
+            const authz = app.registry.getUtility('authorizationPolicy');
 
             // Set default handlers for what happens when the user clicks the
             // edit and delete buttons:

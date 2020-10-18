@@ -1,9 +1,10 @@
-import adder from 'annotator/src/ui/adder';
 import util from 'annotator/src/util';
 import textselector from 'annotator/src/ui/textselector';
+import Adder from '../ui/adder';
 import highlighter from '../ui/highlighter';
-import editor from '../ui/editor';
+import Editor from '../ui/editor';
 import viewer from '../ui/viewer';
+import $ from 'jquery';
 
 const _t = util.gettext;
 
@@ -46,7 +47,7 @@ function maxZIndex(elements) {
     let max = -1;
 
     for (let i = 0; i < elements.length; i++) {
-        const $el = util.$(elements[i]);
+        const $el = $(elements[i]);
         if ($el.css('position') !== 'static') {
             // Use parseFloat since we may get scientific notation for large
             // values.
@@ -63,7 +64,7 @@ function maxZIndex(elements) {
 // Helper function to inject CSS into the page that ensures Annotator elements
 // are displayed with the highest z-index.
 function injectDynamicStyle() {
-    util.$('#annotator-dynamic-style').remove();
+    $('#annotator-dynamic-style').remove();
 
     const sel = '*' +
         ':not(annotator-adder)' +
@@ -72,7 +73,7 @@ function injectDynamicStyle() {
         ':not(annotator-filter)';
 
     // use the maximum z-index in the page
-    let max = maxZIndex(util.$(global.document.body).find(sel).get());
+    let max = maxZIndex($(global.document.body).find(sel).get());
 
     // but don't go smaller than 1010, because this isn't bulletproof --
     // dynamic elements in the page (notifications, dialogs, etc.) may well
@@ -88,7 +89,7 @@ function injectDynamicStyle() {
         }
     `;
 
-    util.$(`<style>${rules}</style>`)
+    $(`<style>${rules}</style>`)
         .attr('id', 'annotator-dynamic-style')
         .attr('type', 'text/css')
         .appendTo('head');
@@ -97,7 +98,7 @@ function injectDynamicStyle() {
 
 // Helper function to remove dynamic stylesheets
 function removeDynamicStyle() {
-    util.$('#annotator-dynamic-style').remove();
+    $('#annotator-dynamic-style').remove();
 }
 
 
@@ -105,7 +106,7 @@ function removeDynamicStyle() {
 function addPermissionsCheckboxes(editor, ident, authz) {
     function createLoadCallback(action) {
         return function loadCallback(field, annotation) {
-            field = util.$(field).show();
+            field = $(field).show();
 
             const u = ident.who();
             const input = field.find('input');
@@ -141,7 +142,7 @@ function addPermissionsCheckboxes(editor, ident, authz) {
             if (!annotation.permissions) {
                 annotation.permissions = {};
             }
-            if (util.$(field).find('input').is(':checked')) {
+            if ($(field).find('input').is(':checked')) {
                 delete annotation.permissions[action];
             } else {
                 // While the permissions model allows for more complex entries
@@ -223,14 +224,14 @@ export function main(options) {
         const ident = app.registry.getUtility('identityPolicy');
         const authz = app.registry.getUtility('authorizationPolicy');
 
-        s.adder = new adder.Adder({
-            onCreate: function (ann) {
+        s.adder = new Adder({
+            onCreate(ann) {
                 app.annotations.create(ann);
             }
         });
         s.adder.attach();
 
-        s.editor = new editor.Editor({
+        s.editor = new Editor({
             extensions: options.editorExtensions
         });
         s.editor.attach();
@@ -240,7 +241,7 @@ export function main(options) {
         s.highlighter = new highlighter.Highlighter(options.element);
 
         s.textselector = new textselector.TextSelector(options.element, {
-            onSelection: function (ranges, event) {
+            onSelection(ranges, event) {
                 if (ranges.length > 0) {
                     const annotation = makeAnnotation(ranges);
                     s.interactionPoint = util.mousePosition(event);
@@ -252,20 +253,18 @@ export function main(options) {
         });
 
         s.viewer = new viewer.Viewer({
-            onEdit: function (ann) {
+            onEdit(ann) {
                 // Copy the interaction point from the shown viewer:
-                s.interactionPoint = util.$(s.viewer.element)
-                                         .css(['top', 'left']);
-
+                s.interactionPoint = $(s.viewer.element).css(['top', 'left']);
                 app.annotations.update(ann);
             },
-            onDelete: function (ann) {
+            onDelete(ann) {
                 app.annotations['delete'](ann);
             },
-            permitEdit: function (ann) {
+            permitEdit(ann) {
                 return authz.permits('update', ann, ident.who());
             },
-            permitDelete: function (ann) {
+            permitDelete(ann) {
                 return authz.permits('delete', ann, ident.who());
             },
             autoViewHighlights: options.element,
