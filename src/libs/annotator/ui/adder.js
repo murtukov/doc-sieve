@@ -1,12 +1,13 @@
 import Widget from './widget';
+import $ from 'jquery';
 
 const util = require('annotator/src/util');
-
-const $ = util.$;
 const _t = util.gettext;
 
-// Adder shows and hides an annotation adder button that can be clicked on to
-// create an annotation.
+/**
+ * Adder shows and hides an annotation adder button that can be clicked on to
+ * create an annotation.
+ */
 class Adder extends Widget {
     NS = 'annotator-adder';
 
@@ -47,17 +48,19 @@ class Adder extends Widget {
         Widget.prototype.destroy.call(this);
     }
 
-    // Public: Load an annotation and show the adder.
-    //
-    // annotation - An annotation Object to load.
-    // position - An Object specifying the position in which to show the editor
-    //            (optional).
-    //
-    // If the user clicks on the adder with an annotation loaded, the onCreate
-    // handler will be called. In this way, the adder can serve as an
-    // intermediary step between making a selection and creating an annotation.
-    //
-    // Returns nothing.
+    /**
+     * Public: Load an annotation and show the adder.
+     *
+     * annotation - An annotation Object to load.
+     * position - An Object specifying the position in which to show the editor
+     *            (optional).
+     *
+     * If the user clicks on the adder with an annotation loaded, the onCreate
+     * handler will be called. In this way, the adder can serve as an
+     * intermediary step between making a selection and creating an annotation.
+     *
+     * Returns nothing.
+     */
     load(annotation, position) {
         this.annotation = annotation;
         this.show(position);
@@ -106,11 +109,13 @@ class Adder extends Widget {
         this.ignoreMouseup = true;
     }
 
-    // Event callback: called when the mouse button is released
-    //
-    // event - A mouseup Event object
-    //
-    // Returns nothing.
+    /**
+     * Event callback: called when the mouse button is released
+     *
+     * event - A mouseup Event object
+     *
+     * Returns nothing.
+     */
     onMouseup(event) {
         // Do nothing for right-clicks, middle-clicks, etc.
         if (event.which > 1) {
@@ -124,13 +129,15 @@ class Adder extends Widget {
         }
     }
 
-    // Event callback: called when the adder is clicked. The click event is used
-    // as well as the mousedown so that we get the :active state on the adder
-    // when clicked.
-    //
-    // event - A mousedown Event object
-    //
-    // Returns nothing.
+    /**
+     * Event callback: called when the adder is clicked. The click event is used
+     * as well as the mousedown so that we get the :active state on the adder
+     * when clicked.
+     *
+     * event - A mousedown Event object
+     *
+     * Returns nothing.
+     */
     onClick(event) {
         // Do nothing for right-clicks, middle-clicks, etc.
         if (event.which > 1) {

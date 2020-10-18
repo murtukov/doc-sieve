@@ -4,9 +4,6 @@ import $ from 'jquery';
 const util = require('annotator/src/util');
 const _t = util.gettext;
 
-const NS = "annotator-editor";
-
-
 // id returns an identifier unique within this session
 const id = (function () {
     var counter;
@@ -201,6 +198,7 @@ export function mover(element, handle) {
 
 // Public: Creates an element for editing annotations.
 class Editor extends Widget {
+    NS = "annotator-editor";
     fields = [];
     annotation = {};
 
@@ -273,15 +271,15 @@ class Editor extends Widget {
         }
 
         this.element
-            .on("submit." + NS, 'form', e => this._onFormSubmit(e))
-            .on("click." + NS, '.annotator-save', e => this._onSaveClick(e))
-            .on("click." + NS, '.annotator-cancel', e => this._onCancelClick(e))
-            .on("mouseover." + NS, '.annotator-cancel', e => this._onCancelMouseover(e))
-            .on("keydown." + NS, 'textarea', e => this._onTextareaKeydown(e));
+            .on("submit." + this.NS, 'form', e => this.onFormSubmit(e))
+            .on("click." + this.NS, '.annotator-save', e => this.onSaveClick(e))
+            .on("click." + this.NS, '.annotator-cancel', e => this.onCancelClick(e))
+            .on("mouseover." + this.NS, '.annotator-cancel', e => this.onCancelMouseover(e))
+            .on("keydown." + this.NS, 'textarea', e => this.onTextareaKeydown(e));
     }
 
     destroy() {
-        this.element.off("." + NS);
+        this.element.off("." + this.NS);
         super.destroy();
     }
 
@@ -316,7 +314,7 @@ class Editor extends Widget {
         // give main textarea focus
         this.element.find(":input:first").focus();
 
-        this._setupDraggables();
+        this.setupDraggables();
     }
 
     /**
@@ -371,62 +369,64 @@ class Editor extends Widget {
         this.hide();
     }
 
-    // Public: Adds an addional form field to the editor. Callbacks can be
-    // provided to update the view and anotations on load and submission.
-    //
-    // options - An options Object. Options are as follows:
-    //           id     - A unique id for the form element will also be set as
-    //                    the "for" attrubute of a label if there is one.
-    //                    (default: "annotator-field-{number}")
-    //           type   - Input type String. One of "input", "textarea",
-    //                    "checkbox", "select" (default: "input")
-    //           label  - Label to display either in a label Element or as
-    //                    placeholder text depending on the type. (default: "")
-    //           load   - Callback Function called when the editor is loaded
-    //                    with a new annotation. Receives the field <li> element
-    //                    and the annotation to be loaded.
-    //           submit - Callback Function called when the editor is submitted.
-    //                    Receives the field <li> element and the annotation to
-    //                    be updated.
-    //
-    // Examples
-    //
-    //   # Add a new input element.
-    //   editor.addField({
-    //     label: "Tags",
-    //
-    //     # This is called when the editor is loaded use it to update your
-    //     # input.
-    //     load: (field, annotation) ->
-    //       # Do something with the annotation.
-    //       value = getTagString(annotation.tags)
-    //       $(field).find('input').val(value)
-    //
-    //     # This is called when the editor is submitted use it to retrieve data
-    //     # from your input and save it to the annotation.
-    //     submit: (field, annotation) ->
-    //       value = $(field).find('input').val()
-    //       annotation.tags = getTagsFromString(value)
-    //   })
-    //
-    //   # Add a new checkbox element.
-    //   editor.addField({
-    //     type: 'checkbox',
-    //     id: 'annotator-field-my-checkbox',
-    //     label: 'Allow anyone to see this annotation',
-    //     load: (field, annotation) ->
-    //       # Check what state of input should be.
-    //       if checked
-    //         $(field).find('input').attr('checked', 'checked')
-    //       else
-    //         $(field).find('input').removeAttr('checked')
-
-    //     submit: (field, annotation) ->
-    //       checked = $(field).find('input').is(':checked')
-    //       # Do something.
-    //   })
-    //
-    // Returns the created <li> Element.
+    /** Public: Adds an addional form field to the editor. Callbacks can be
+     * provided to update the view and anotations on load and submission.
+     *
+     * Examples:
+     * ```
+     *   # Add a new input element.
+     *   editor.addField({
+     *     label: "Tags",
+     *
+     *     # This is called when the editor is loaded use it to update your
+     *     # input.
+     *     load: (field, annotation) ->
+     *       # Do something with the annotation.
+     *       value = getTagString(annotation.tags)
+     *       $(field).find('input').val(value)
+     *
+     *     # This is called when the editor is submitted use it to retrieve data
+     *     # from your input and save it to the annotation.
+     *     submit: (field, annotation) ->
+     *       value = $(field).find('input').val()
+     *       annotation.tags = getTagsFromString(value)
+     *   })
+     *
+     *   # Add a new checkbox element.
+     *   editor.addField({
+     *     type: 'checkbox',
+     *     id: 'annotator-field-my-checkbox',
+     *     label: 'Allow anyone to see this annotation',
+     *     load: (field, annotation) ->
+     *       # Check what state of input should be.
+     *       if checked
+     *         $(field).find('input').attr('checked', 'checked')
+     *       else
+     *         $(field).find('input').removeAttr('checked')
+     *
+     *     submit: (field, annotation) ->
+     *       checked = $(field).find('input').is(':checked')
+     *       # Do something.
+     *   })
+     *
+     * ```
+     * options - An options Object. Options are as follows:
+     *           id     - A unique id for the form element will also be set as
+     *                    the "for" attrubute of a label if there is one.
+     *                    (default: "annotator-field-{number}")
+     *           type   - Input type String. One of "input", "textarea",
+     *                    "checkbox", "select" (default: "input")
+     *           label  - Label to display either in a label Element or as
+     *                    placeholder text depending on the type. (default: "")
+     *           load   - Callback Function called when the editor is loaded
+     *                    with a new annotation. Receives the field <li> element
+     *                    and the annotation to be loaded.
+     *           submit - Callback Function called when the editor is submitted.
+     *                    Receives the field <li> element and the annotation to
+     *                    be updated.
+     * 
+     * @return {object}  the created <li> Element.
+     */ 
     addField(options) {
         const field = $.extend({
             id: 'annotator-field-' + id(),
@@ -489,49 +489,58 @@ class Editor extends Widget {
         return this;
     }
 
-    // Event callback: called when a user clicks the editor form (by pressing
-    // return, for example).
-    //
-    // Returns nothing
-    _onFormSubmit(event) {
+    /** Event callback: called when a user clicks the editor form (by pressing
+     * return, for example).
+     *
+     * Returns nothing
+     */
+    onFormSubmit(event) {
         preventEventDefault(event);
         this.submit();
     }
 
-    // Event callback: called when a user clicks the editor's save button.
-    //
-    // Returns nothing
-    _onSaveClick(event) {
+    /**
+     * Event callback: called when a user clicks the editor's save button.
+     *
+     * Returns nothing
+     */
+    onSaveClick(event) {
         preventEventDefault(event);
         this.submit();
     }
 
-    // Event callback: called when a user clicks the editor's cancel button.
-    //
-    // Returns nothing
-    _onCancelClick(event) {
+    /**
+     * Event callback: called when a user clicks the editor's cancel button.
+     *
+     * Returns nothing
+     */
+    onCancelClick(event) {
         preventEventDefault(event);
         this.cancel();
     }
 
-    // Event callback: called when a user mouses over the editor's cancel
-    // button.
-    //
-    // Returns nothing
-    _onCancelMouseover() {
+    /**
+     * Event callback: called when a user mouses over the editor's cancel
+     * button.
+     *
+     * Returns nothing
+     */
+    onCancelMouseover() {
         this.element
             .find('.' + this.classes.focus)
             .removeClass(this.classes.focus);
     }
 
-    // Event callback: listens for the following special keypresses.
-    // - escape: Hides the editor
-    // - enter:  Submits the editor
-    //
-    // event - A keydown Event object.
-    //
-    // Returns nothing
-    _onTextareaKeydown(event) {
+    /**
+     * Event callback: listens for the following special keypresses.
+     * - escape: Hides the editor
+     * - enter:  Submits the editor
+     *
+     * event - A keydown Event object.
+     *
+     * Returns nothing
+     */
+    onTextareaKeydown(event) {
         if (event.which === 27) {
             // "Escape" key => abort.
             this.cancel();
@@ -541,14 +550,16 @@ class Editor extends Widget {
         }
     }
 
-    // Sets up mouse events for resizing and dragging the editor window.
-    //
-    // Returns nothing.
-    _setupDraggables() {
-        if (typeof this._resizer !== 'undefined' && this._resizer !== null) {
+    /**
+     * Sets up mouse events for resizing and dragging the editor window.
+     *
+     * Returns nothing.
+     */
+    setupDraggables() {
+        if (this._resizer) {
             this._resizer.destroy();
         }
-        if (typeof this._mover !== 'undefined' && this._mover !== null) {
+        if (this._mover) {
             this._mover.destroy();
         }
 
@@ -580,9 +591,11 @@ class Editor extends Widget {
     }
 }
 
-// standalone is a module that uses the Editor to display an editor widget
-// allowing the user to provide a note (and other data) before an annotation is
-// created or updated.
+/**
+ * standalone is a module that uses the Editor to display an editor widget
+ * allowing the user to provide a note (and other data) before an annotation is
+ * created or updated.
+ */
 export function standalone(options) {
     const widget = new Editor(options);
 

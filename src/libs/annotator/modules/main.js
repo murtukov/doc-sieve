@@ -24,13 +24,13 @@ function trim(s) {
 // annotationFactory returns a function that can be used to construct an
 // annotation from a list of selected ranges.
 function annotationFactory(contextEl, ignoreSelector) {
-    return function (ranges) {
+    return (ranges) => {
         const text = [];
         const serializedRanges = [];
 
         for (let i = 0; i < ranges.length; i++) {
             const r = ranges[i];
-            text.push(trim(r.text()));
+            text.push(r.text().trim());
             serializedRanges.push(r.serialize(contextEl, ignoreSelector));
         }
 
@@ -46,8 +46,8 @@ function annotationFactory(contextEl, ignoreSelector) {
 function maxZIndex(elements) {
     let max = -1;
 
-    for (let i = 0; i < elements.length; i++) {
-        const $el = $(elements[i]);
+    for (let item of elements) {
+        const $el = $(item);
         if ($el.css('position') !== 'static') {
             // Use parseFloat since we may get scientific notation for large
             // values.
@@ -105,14 +105,14 @@ function removeDynamicStyle() {
 // Helper function to add permissions checkboxes to the editor
 function addPermissionsCheckboxes(editor, ident, authz) {
     function createLoadCallback(action) {
-        return function loadCallback(field, annotation) {
+        return (field, annotation) => {
             field = $(field).show();
 
             const u = ident.who();
             const input = field.find('input');
 
             // Do not show field if no user is set
-            if (typeof u === 'undefined' || u === null) {
+            if (!u) {
                 field.hide();
             }
 
@@ -131,7 +131,7 @@ function addPermissionsCheckboxes(editor, ident, authz) {
     }
 
     function createSubmitCallback(action) {
-        return function submitCallback(field, annotation) {
+        return (field, annotation) => {
             const u = ident.who();
 
             // Don't do anything if no user is set
@@ -203,11 +203,7 @@ function addPermissionsCheckboxes(editor, ident, authz) {
  *      extensions.
  *
  */
-export function main(options) {
-    if (typeof options === 'undefined' || options === null) {
-        options = {};
-    }
-
+export function main(options = {}) {
     options.element = options.element || global.document.body;
     options.editorExtensions = options.editorExtensions || [];
     options.viewerExtensions = options.viewerExtensions || [];
@@ -261,12 +257,8 @@ export function main(options) {
             onDelete(ann) {
                 app.annotations['delete'](ann);
             },
-            permitEdit(ann) {
-                return authz.permits('update', ann, ident.who());
-            },
-            permitDelete(ann) {
-                return authz.permits('delete', ann, ident.who());
-            },
+            permitEdit:   (ann) => authz.permits('update', ann, ident.who()),
+            permitDelete: (ann) => authz.permits('delete', ann, ident.who()),
             autoViewHighlights: options.element,
             extensions: options.viewerExtensions
         });
@@ -276,9 +268,8 @@ export function main(options) {
     }
 
     return {
-        start: start,
-
-        destroy: function () {
+        start,
+        destroy() {
             s.adder.destroy();
             s.editor.destroy();
             s.highlighter.destroy();
@@ -287,12 +278,12 @@ export function main(options) {
             removeDynamicStyle();
         },
 
-        annotationsLoaded: function (anns) { s.highlighter.drawAll(anns); },
-        annotationCreated: function (ann) { s.highlighter.draw(ann); },
-        annotationDeleted: function (ann) { s.highlighter.undraw(ann); },
-        annotationUpdated: function (ann) { s.highlighter.redraw(ann); },
+        annotationsLoaded(anns) { s.highlighter.drawAll(anns) },
+        annotationCreated(ann) { s.highlighter.draw(ann) },
+        annotationDeleted(ann) { s.highlighter.undraw(ann) },
+        annotationUpdated(ann) { s.highlighter.redraw(ann) },
 
-        beforeAnnotationCreated: function (annotation) {
+        beforeAnnotationCreated(annotation) {
             // Editor#load returns a promise that is resolved if editing
             // completes, and rejected if editing is cancelled. We return it
             // here to "stall" the annotation process until the editing is
@@ -300,7 +291,7 @@ export function main(options) {
             return s.editor.load(annotation, s.interactionPoint);
         },
 
-        beforeAnnotationUpdated: function (annotation) {
+        beforeAnnotationUpdated(annotation) {
             return s.editor.load(annotation, s.interactionPoint);
         }
     };

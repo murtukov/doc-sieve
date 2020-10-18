@@ -4,6 +4,11 @@ import annotator from 'annotator';
 import sampleText from '../app/sample-text';
 import $ from 'jquery';
 import {main as CustomModule} from '../../libs/annotator/modules/main';
+import LeftBar from "./sub/left-bar/LeftBar";
+import RightBar from "./sub/right-bar/RightBar";
+import {createUseStyles} from "react-jss";
+import {width as leftBarWidth} from "../editor/sub/left-bar/styles";
+import {minWidth as rightBarWidth} from "../editor/sub/right-bar/styles";
 
 function myModule() {
     return {
@@ -72,6 +77,8 @@ function customEditorExtension(e) {
 }
 
 function Annotator(props) {
+    const c = useStyles();
+
     useEffect(() => {
         const app = new annotator.App();
 
@@ -88,11 +95,30 @@ function Annotator(props) {
 
     return (
         <MainLayout>
-            <div id='content' >
+            <LeftBar/>
+            <div id='content' className={c.content}>
                 {sampleText}
             </div>
+            <RightBar/>
         </MainLayout>
     );
 }
+
+const useStyles = createUseStyles({
+    content: {
+        marginLeft: leftBarWidth,
+        marginRight: rightBarWidth,
+        whiteSpace: "pre-line",
+        padding: 15,
+        fontSize: 16,
+        overflow: "auto",
+        '&::-webkit-scrollbar': {
+            width: 8,
+        },
+        '&::-webkit-scrollbar-thumb': {
+            background: '#a5a5a5',
+        },
+    },
+});
 
 export default Annotator;

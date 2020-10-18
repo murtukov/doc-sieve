@@ -1,7 +1,7 @@
 import { init } from '@rematch/core'
 import app from '../features/app/model';
-import storage from 'redux-persist/lib/storage';
-import persistPlugin from '@rematch/persist'
+// import storage from 'redux-persist/lib/storage';
+// import persistPlugin from '@rematch/persist'
 
 // const persistConfig = {
 //     key: 'root',
