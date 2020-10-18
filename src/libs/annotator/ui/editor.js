@@ -1,16 +1,11 @@
 import Widget from './widget';
+import {gettext as _t} from "../utils";
 import $ from 'jquery';
-
-const util = require('annotator/src/util');
-const _t = util.gettext;
 
 // id returns an identifier unique within this session
 const id = (function () {
-    var counter;
-    counter = -1;
-    return function () {
-        return counter += 1;
-    };
+    let counter = -1;
+    return () => counter += 1;
 }());
 
 
@@ -169,8 +164,7 @@ export function resizer(element, handle, options) {
 
         // Did the element dimensions actually change? If not, then we've
         // reached the minimum size, and we shouldn't track
-        const didChange = ($el.height() !== height || $el.width() !== width);
-        return didChange;
+        return ($el.height() !== height || $el.width() !== width);
     }
 
     // We return the dragTracker object in order to expose its methods.

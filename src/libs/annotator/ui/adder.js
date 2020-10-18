@@ -1,8 +1,6 @@
 import Widget from './widget';
+import {gettext as _t} from "../utils";
 import $ from 'jquery';
-
-const util = require('annotator/src/util');
-const _t = util.gettext;
 
 /**
  * Adder shows and hides an annotation adder button that can be clicked on to

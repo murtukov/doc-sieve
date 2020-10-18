@@ -1,28 +1,15 @@
-import util from 'annotator/src/util';
 import textselector from 'annotator/src/ui/textselector';
 import Adder from '../ui/adder';
 import highlighter from '../ui/highlighter';
 import Editor from '../ui/editor';
 import Viewer from '../ui/viewer';
+import {gettext as _t, mousePosition} from "../utils";
 import $ from 'jquery';
 
-const _t = util.gettext;
-
 /**
- * Trim strips whitespace from either end of a string.
- * This usually exists in native code, but not in IE8.
+ * annotationFactory returns a function that can be used to construct an
+ * annotation from a list of selected ranges.
  */
-function trim(s) {
-    if (typeof String.prototype.trim === 'function') {
-        return String.prototype.trim.call(s);
-    } else {
-        return s.replace(/^[\s\xA0]+|[\s\xA0]+$/g, '');
-    }
-}
-
-
-// annotationFactory returns a function that can be used to construct an
-// annotation from a list of selected ranges.
 function annotationFactory(contextEl, ignoreSelector) {
     return (ranges) => {
         const text = [];
@@ -42,7 +29,9 @@ function annotationFactory(contextEl, ignoreSelector) {
 }
 
 
-// maxZIndex returns the maximum z-index of all elements in the provided set.
+/**
+ * maxZIndex returns the maximum z-index of all elements in the provided set.
+ */
 function maxZIndex(elements) {
     let max = -1;
 
@@ -60,9 +49,10 @@ function maxZIndex(elements) {
     return max;
 }
 
-
-// Helper function to inject CSS into the page that ensures Annotator elements
-// are displayed with the highest z-index.
+/**
+ * Helper function to inject CSS into the page that ensures Annotator elements
+ * are displayed with the highest z-index.
+ */
 function injectDynamicStyle() {
     $('#annotator-dynamic-style').remove();
 
@@ -96,13 +86,17 @@ function injectDynamicStyle() {
 }
 
 
-// Helper function to remove dynamic stylesheets
+/**
+ * Helper function to remove dynamic stylesheets
+ */
 function removeDynamicStyle() {
     $('#annotator-dynamic-style').remove();
 }
 
 
-// Helper function to add permissions checkboxes to the editor
+/**
+ * Helper function to add permissions checkboxes to the editor
+ */
 function addPermissionsCheckboxes(editor, ident, authz) {
     function createLoadCallback(action) {
         return (field, annotation) => {
@@ -240,7 +234,7 @@ export function main(options = {}) {
             onSelection(ranges, event) {
                 if (ranges.length > 0) {
                     const annotation = makeAnnotation(ranges);
-                    s.interactionPoint = util.mousePosition(event);
+                    s.interactionPoint = mousePosition(event);
                     s.adder.load(annotation, s.interactionPoint);
                 } else {
                     s.adder.hide();

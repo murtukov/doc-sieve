@@ -1,8 +1,12 @@
 import Widget from "./widget";
+import {escapeHtml, gettext as _t, mousePosition} from "../utils";
+
+// TODO: check why this jquery doesn't work as expected
+//       maybe because it's another instance and need to import it everywhere
+// import $ from 'jquery';
 
 const util = require('annotator/src/util');
 const $ = util.$;
-const _t = util.gettext;
 
 /**
  * Simple parser for hypermedia link structure
@@ -153,7 +157,7 @@ class Viewer extends Widget {
 
         this.render = (annotation) => {
             if (annotation.text) {
-                return util.escapeHtml(annotation.text);
+                return escapeHtml(annotation.text);
             } else {
                 return `<i>${_t('No comment')}</i>`;
             }
@@ -189,39 +193,29 @@ class Viewer extends Widget {
                     // If there are many overlapping highlights, still only
                     // call _onHighlightMouseover once.
                     if (event.target === this) {
-                        self._onHighlightMouseover(event);
+                        self.onHighlightMouseover(event);
                     }
                 })
-                .on("mouseleave." + this.NS, '.annotator-hl', function () {
-                    self._startHideTimer();
-                });
+                .on("mouseleave." + this.NS, '.annotator-hl', () => this.startHideTimer());
 
             $(this.document.body)
-                .on("mousedown." + this.NS, function (e) {
+                .on(`mousedown.${this.NS}`, e => {
                     if (e.which === 1) {
-                        self.mouseDown = true;
+                        this.mouseDown = true;
                     }
                 })
-                .on("mouseup." + this.NS, function (e) {
+                .on(`mouseup.${this.NS}`, e => {
                     if (e.which === 1) {
-                        self.mouseDown = false;
+                        this.mouseDown = false;
                     }
                 });
         }
 
         this.element
-            .on("click." + this.NS, '.annotator-edit', function (e) {
-                self._onEditClick(e);
-            })
-            .on("click." + this.NS, '.annotator-delete', function (e) {
-                self._onDeleteClick(e);
-            })
-            .on("mouseenter." + this.NS, function () {
-                self._clearHideTimer();
-            })
-            .on("mouseleave." + this.NS, function () {
-                self._startHideTimer();
-            });
+            .on(`click.${this.NS}`, '.annotator-edit', e => this.onEditClick(e))
+            .on(`click.${this.NS}`, '.annotator-delete', e => this.onDeleteClick(e))
+            .on(`mouseenter.${this.NS}`, () => this.clearHideTimer())
+            .on(`mouseleave.${this.NS}`, () => this.startHideTimer());
     }
 
     destroy() {
@@ -275,15 +269,13 @@ class Viewer extends Widget {
      *
      * Returns nothing.
      */
-    load(annotations, position) {
-        this.annotations = annotations || [];
-
+    load(annotations = [], position) {
         const list = this.element.find('ul:first').empty();
 
-        for (let annotation of this.annotations) {
-            this._annotationItem(annotation)
+        for (let annotation of annotations) {
+            this.annotationItem(annotation)
                 .appendTo(list)
-              .data('annotation', annotation);
+                .data('annotation', annotation);
         }
 
         this.show(position);
@@ -303,7 +295,7 @@ class Viewer extends Widget {
     /**
      * Create the list item for a single annotation
      */
-    _annotationItem(annotation) {
+    annotationItem(annotation) {
         const item = $(this.itemTemplate).clone();
 
         const controls = item.find('.annotator-controls');
@@ -399,8 +391,8 @@ class Viewer extends Widget {
      *
      * Returns nothing.
      */
-    _onEditClick(event) {
-        var item = $(event.target)
+    onEditClick(event) {
+        const item = $(event.target)
             .parents('.annotator-annotation')
             .data('annotation');
         this.hide();
@@ -414,8 +406,8 @@ class Viewer extends Widget {
      *
      * Returns nothing.
      */
-    _onDeleteClick(event) {
-        var item = $(event.target)
+    onDeleteClick(event) {
+        const item = $(event.target)
             .parents('.annotator-annotation')
             .data('annotation');
         this.hide();
@@ -430,14 +422,14 @@ class Viewer extends Widget {
      *
      * Returns nothing.
      */
-    _onHighlightMouseover(event) {
+    onHighlightMouseover(event) {
         // If the mouse button is currently depressed, we're probably trying to
         // make a selection, so we shouldn't show the viewer.
         if (this.mouseDown) {
             return;
         }
 
-        this._startHideTimer(true)
+        this.startHideTimer(true)
             .done(() => {
                 const annotations = $(event.target)
                     .parents('.annotator-hl')
@@ -446,7 +438,7 @@ class Viewer extends Widget {
                     .toArray();
 
                 // Now show the viewer with the wanted annotations
-                this.load(annotations, util.mousePosition(event));
+                this.load(annotations, mousePosition(event));
             });
     }
 
@@ -461,7 +453,7 @@ class Viewer extends Widget {
      *
      * Returns a Promise.
      */
-    _startHideTimer(activity = false) {
+    startHideTimer(activity = false) {
         // If timer has already been set, use that one.
         if (this.hideTimer) {
             if (activity === false || this.hideTimerActivity === activity) {
@@ -470,7 +462,7 @@ class Viewer extends Widget {
                 // The pending timeout is an inactivity timeout, so likely to be
                 // too slow. Clear the pending timeout and start a new (shorter)
                 // one!
-                this._clearHideTimer();
+                this.clearHideTimer();
             }
         }
 
@@ -505,7 +497,7 @@ class Viewer extends Widget {
      *
      * Returns nothing.
      */
-    _clearHideTimer() {
+    clearHideTimer() {
         clearTimeout(this.hideTimer);
         this.hideTimer = null;
         this.hideTimerDfd.reject();
