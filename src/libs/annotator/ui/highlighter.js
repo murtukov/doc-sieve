@@ -1,9 +1,8 @@
+import store from "../../rematch";
+
 const Range = require('xpath-range').Range;
-
 const util = require('annotator/src/util');
-
 const $ = util.$;
-const Promise = util.Promise;
 
 
 // highlightRange wraps the DOM Nodes within the provided range with a highlight
@@ -13,10 +12,7 @@ const Promise = util.Promise;
 // cssClass - A CSS class to use for the highlight (default: 'annotator-hl')
 //
 // Returns an array of highlight Elements.
-function highlightRange(normedRange, cssClass) {
-    if (typeof cssClass === 'undefined' || cssClass === null) {
-        cssClass = 'annotator-hl';
-    }
+function highlightRange(normedRange, cssClass = 'annotator-hl') {
     const white = /^\s*$/;
 
     // Ignore text nodes that contain only whitespace characters. This prevents
@@ -27,12 +23,11 @@ function highlightRange(normedRange, cssClass) {
     const nodes = normedRange.textNodes();
     const results = [];
 
-    for (let i = 0; i < nodes.length; i++) {
-        const node = nodes[i];
+    for (let node of nodes) {
         if (!white.test(node.nodeValue)) {
             const hl = global.document.createElement('span');
             hl.className = cssClass;
-            // hl.style.backgroundColor = "lightgreen";
+            // hl.style.backgroundColor = store.getState().app.selectedConcept.bgColor;
             node.parentNode.replaceChild(hl, node);
             hl.appendChild(node);
             results.push(hl);
@@ -67,160 +62,140 @@ function reanchorRange(range, rootElement) {
 // options - An options Object containing configuration options for the plugin.
 //           See `Highlighter.options` for available options.
 //
-const Highlighter = exports.Highlighter = function Highlighter(element, options) {
-    this.element = element;
-    this.options = $.extend(true, {}, Highlighter.options, options);
-};
+class Highlighter {
+    options = {
+        // The CSS class to apply to drawn highlights
+        highlightClass: 'annotator-hl',
+        // Number of annotations to draw at once
+        chunkSize: 10,
+        // Time (in ms) to pause between drawing chunks of annotations
+        chunkDelay: 10
+    }
 
-Highlighter.prototype.destroy = function () {
-    $(this.element)
-        .find("." + this.options.highlightClass)
-        .each(function (_, el) {
-            $(el).contents().insertBefore(el);
-            $(el).remove();
+    constructor(element, options) {
+        this.element = element;
+        this.options = $.extend(true, {}, this.options, options);
+    }
+
+    destroy() {
+        $(this.element)
+            .find("." + this.options.highlightClass)
+            .each((_, el) => {
+                $(el).contents().insertBefore(el);
+                $(el).remove();
+            });
+    }
+
+    // Public: Draw highlights for all the given annotations
+    //
+    // annotations - An Array of annotation Objects for which to draw highlights.
+    //
+    // Returns nothing.
+    drawAll(annotations) {
+        return new Promise((resolve) => {
+            let highlights = [];
+
+            const loader = (annList) => {
+                if (!annList) {
+                    annList = [];
+                }
+
+                const now = annList.splice(0, this.options.chunkSize);
+
+                for (let item of now) {
+                    highlights = highlights.concat(this.draw(item));
+                }
+
+                // If there are more to do, do them after a delay
+                if (annList.length > 0) {
+                    setTimeout(function () {
+                        loader(annList);
+                    }, this.options.chunkDelay);
+                } else {
+                    resolve(highlights);
+                }
+            }
+
+            const clone = annotations.slice();
+            loader(clone);
         });
-};
+    }
 
-// Public: Draw highlights for all the given annotations
-//
-// annotations - An Array of annotation Objects for which to draw highlights.
-//
-// Returns nothing.
-Highlighter.prototype.drawAll = function (annotations) {
-    const self = this;
+    // Public: Draw highlights for the annotation.
+    //
+    // annotation - An annotation Object for which to draw highlights.
+    //
+    // Returns an Array of drawn highlight elements.
+    draw(annotation) {
+        const normedRanges = [];
 
-    const p = new Promise(function (resolve) {
-        let highlights = [];
-
-        function loader(annList) {
-            if (typeof annList === 'undefined' || annList === null) {
-                annList = [];
-            }
-
-            const now = annList.splice(0, self.options.chunkSize);
-            let i = 0;
-            const len = now.length;
-            for (; i < len; i++) {
-                highlights = highlights.concat(self.draw(now[i]));
-            }
-
-            // If there are more to do, do them after a delay
-            if (annList.length > 0) {
-                setTimeout(function () {
-                    loader(annList);
-                }, self.options.chunkDelay);
-            } else {
-                resolve(highlights);
+        for (let i = 0; i < annotation.ranges.length; i++) {
+            const r = reanchorRange(annotation.ranges[i], this.element);
+            if (r !== null) {
+                normedRanges.push(r);
             }
         }
 
-        const clone = annotations.slice();
-        loader(clone);
-    });
-
-    return p;
-};
-
-// Public: Draw highlights for the annotation.
-//
-// annotation - An annotation Object for which to draw highlights.
-//
-// Returns an Array of drawn highlight elements.
-Highlighter.prototype.draw = function (annotation) {
-    const normedRanges = [];
-
-    let i = 0;
-    const ilen = annotation.ranges.length;
-    for (; i < ilen; i++) {
-        const r = reanchorRange(annotation.ranges[i], this.element);
-        if (r !== null) {
-            normedRanges.push(r);
+        if (!annotation._local) {
+            annotation._local = {};
         }
-    }
-
-    const hasLocal = (typeof annotation._local !== 'undefined' &&
-        annotation._local !== null);
-    if (!hasLocal) {
-        annotation._local = {};
-    }
-    const hasHighlights = (typeof annotation._local.highlights !== 'undefined' &&
-        annotation._local.highlights === null);
-    if (!hasHighlights) {
-        annotation._local.highlights = [];
-    }
-
-    let j = 0;
-    const jlen = normedRanges.length;
-    for (; j < jlen; j++) {
-        const normed = normedRanges[j];
-        $.merge(
-            annotation._local.highlights,
-            highlightRange(normed, this.options.highlightClass)
-        );
-    }
-
-    // Save the annotation data on each highlighter element.
-    $(annotation._local.highlights).data('annotation', annotation);
-
-    // Add a data attribute for annotation id if the annotation has one
-    if (typeof annotation.id !== 'undefined' && annotation.id !== null) {
-        $(annotation._local.highlights)
-            .attr('data-annotation-id', annotation.id);
-    }
-
-    return annotation._local.highlights;
-};
-
-// Public: Remove the drawn highlights for the given annotation.
-//
-// annotation - An annotation Object for which to purge highlights.
-//
-// Returns nothing.
-Highlighter.prototype.undraw = function (annotation) {
-    const hasHighlights = (typeof annotation._local !== 'undefined' &&
-        annotation._local !== null &&
-        typeof annotation._local.highlights !== 'undefined' &&
-        annotation._local.highlights !== null);
-
-    if (!hasHighlights) {
-        return;
-    }
-
-    let i = 0;
-    const len = annotation._local.highlights.length;
-    for (; i < len; i++) {
-        const h = annotation._local.highlights[i];
-        if (h.parentNode !== null) {
-            $(h).replaceWith(h.childNodes);
+        if (!annotation._local.highlights) {
+            annotation._local.highlights = [];
         }
+
+        for (let normed of normedRanges) {
+            $.merge(
+                annotation._local.highlights,
+                highlightRange(normed, this.options.highlightClass)
+            );
+        }
+
+        // Save the annotation data on each highlighter element.
+        $(annotation._local.highlights).data('annotation', annotation);
+
+        // Add a data attribute for annotation id if the annotation has one
+        if (undefined !== annotation.id) {
+            $(annotation._local.highlights)
+                .attr('data-annotation-id', annotation.id);
+        }
+
+        return annotation._local.highlights;
     }
-    delete annotation._local.highlights;
-};
 
-// Public: Redraw the highlights for the given annotation.
-//
-// annotation - An annotation Object for which to redraw highlights.
-//
-// Returns the list of newly-drawn highlights.
-Highlighter.prototype.redraw = function (annotation) {
-    this.undraw(annotation);
-    return this.draw(annotation);
-};
+    // Public: Remove the drawn highlights for the given annotation.
+    //
+    // annotation - An annotation Object for which to purge highlights.
+    //
+    // Returns nothing.
+    undraw(annotation) {
+        if (!annotation._local?.highlights) {
+            return;
+        }
 
-Highlighter.options = {
-    // The CSS class to apply to drawn highlights
-    highlightClass: 'annotator-hl',
-    // Number of annotations to draw at once
-    chunkSize: 10,
-    // Time (in ms) to pause between drawing chunks of annotations
-    chunkDelay: 10
-};
+        for (let i = 0; i < annotation._local.highlights.length; i++) {
+            const h = annotation._local.highlights[i];
+            if (null !== h.parentNode) {
+                $(h).replaceWith(h.childNodes);
+            }
+        }
+        delete annotation._local.highlights;
+    }
 
+    // Public: Redraw the highlights for the given annotation.
+    //
+    // annotation - An annotation Object for which to redraw highlights.
+    //
+    // Returns the list of newly-drawn highlights.
+    redraw(annotation) {
+        this.undraw(annotation);
+        return this.draw(annotation);
+    }
+}
 
 // standalone is a module that uses the Highlighter to draw/undraw highlights
 // automatically when annotations are created and removed.
-exports.standalone = function standalone(element, options) {
-    const widget = exports.Highlighter(element, options);
+export function standalone(element, options) {
+    const widget = new Highlighter(element, options);
 
     return {
         destroy: function () { widget.destroy(); },
@@ -229,4 +204,6 @@ exports.standalone = function standalone(element, options) {
         annotationDeleted: function (ann) { widget.undraw(ann); },
         annotationUpdated: function (ann) { widget.redraw(ann); }
     };
-};
+}
+
+export default Highlighter;

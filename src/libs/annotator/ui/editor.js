@@ -265,11 +265,11 @@ class Editor extends Widget {
         }
 
         this.element
-            .on("submit." + this.NS, 'form', e => this.onFormSubmit(e))
-            .on("click." + this.NS, '.annotator-save', e => this.onSaveClick(e))
-            .on("click." + this.NS, '.annotator-cancel', e => this.onCancelClick(e))
-            .on("mouseover." + this.NS, '.annotator-cancel', e => this.onCancelMouseover(e))
-            .on("keydown." + this.NS, 'textarea', e => this.onTextareaKeydown(e));
+            .on(`submit.${this.NS}`, 'form', e => this.onFormSubmit(e))
+            .on(`click.${this.NS}`, '.annotator-save', e => this.onSaveClick(e))
+            .on(`click.${this.NS}`, '.annotator-cancel', e => this.onCancelClick(e))
+            .on(`mouseover.${this.NS}`, '.annotator-cancel', e => this.onCancelMouseover(e))
+            .on(`keydown.${this.NS}`, 'textarea', e => this.onTextareaKeydown(e));
     }
 
     destroy() {
@@ -292,7 +292,7 @@ class Editor extends Widget {
      * @return {void}
      */
     show(position) {
-        if (typeof position !== 'undefined' && position !== null) {
+        if (position) {
             this.element.css({
                 top: position.top,
                 left: position.left
@@ -323,13 +323,12 @@ class Editor extends Widget {
     load(annotation, position) {
         this.annotation = annotation;
 
-        for (let i = 0; i < this.fields.length; i++) {
-            const field = this.fields[i];
+        for (let field of this.fields) {
             field.load(field.element, this.annotation);
         }
 
         return new Promise((resolve, reject) => {
-            this.dfd = {resolve: resolve, reject: reject};
+            this.dfd = {resolve, reject};
             this.show(position);
         });
     }
@@ -340,11 +339,10 @@ class Editor extends Widget {
      * @return {void}
      */
     submit() {
-        for (let i = 0, len = this.fields.length; i < len; i++) {
-            const field = this.fields[i];
+        for (let field of this.fields) {
             field.submit(field.element, this.annotation);
         }
-        if (typeof this.dfd !== 'undefined' && this.dfd !== null) {
+        if (this.dfd) {
             this.dfd.resolve();
         }
         this.hide();
@@ -357,7 +355,7 @@ class Editor extends Widget {
      * @return {this}
      */
     cancel() {
-        if (typeof this.dfd !== 'undefined' && this.dfd !== null) {
+        if (this.dfd) {
             this.dfd.reject('editing cancelled');
         }
         this.hide();
@@ -426,8 +424,8 @@ class Editor extends Widget {
             id: 'annotator-field-' + id(),
             type: 'input',
             label: '',
-            load: function () {},
-            submit: function () {}
+            load() {},
+            submit() {}
         }, options);
 
         const element = $('<li class="annotator-item" />');

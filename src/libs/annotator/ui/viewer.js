@@ -411,6 +411,9 @@ class Viewer extends Widget {
             .parents('.annotator-annotation')
             .data('annotation');
         this.hide();
+
+        console.log("Delete annotation", item);
+
         this.options.onDelete(item);
     }
 
@@ -520,23 +523,23 @@ export function standalone(options = {}) {
 
             // Set default handlers for what happens when the user clicks the
             // edit and delete buttons:
-            if ('undefined' === typeof options.onEdit) {
+            if (!options.onEdit) {
                 options.onEdit = function (annotation) {
                     app.annotations.update(annotation);
                 };
             }
-            if ('undefined' === typeof options.onDelete) {
-                options.onDelete = function (annotation) {
+            if (!options.onDelete) {
+                options.onDelete = (annotation) => {
                     app.annotations['delete'](annotation);
                 };
             }
 
             // Set default handlers that determine whether the edit and delete
             // buttons are shown in the viewer:
-            if ('undefined' === typeof options.permitEdit) {
+            if (!options.permitEdit) {
                 options.permitEdit = (annotation) => authz.permits('update', annotation, ident.who());
             }
-            if ('undefined' === typeof options.permitDelete) {
+            if (!options.permitDelete) {
                 options.permitDelete = (annotation) => authz.permits('delete', annotation, ident.who());
             }
 

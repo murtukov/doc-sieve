@@ -1,6 +1,6 @@
 import textselector from 'annotator/src/ui/textselector';
 import Adder from '../ui/adder';
-import highlighter from '../ui/highlighter';
+import Highlighter from '../ui/highlighter';
 import Editor from '../ui/editor';
 import Viewer from '../ui/viewer';
 import {gettext as _t, mousePosition} from "../utils";
@@ -228,7 +228,7 @@ export function main(options = {}) {
 
         addPermissionsCheckboxes(s.editor, ident, authz);
 
-        s.highlighter = new highlighter.Highlighter(options.element);
+        s.highlighter = new Highlighter(options.element);
 
         s.textselector = new textselector.TextSelector(options.element, {
             onSelection(ranges, event) {
@@ -273,9 +273,9 @@ export function main(options = {}) {
         },
 
         annotationsLoaded(anns) { s.highlighter.drawAll(anns) },
-        annotationCreated(ann) { s.highlighter.draw(ann) },
-        annotationDeleted(ann) { s.highlighter.undraw(ann) },
-        annotationUpdated(ann) { s.highlighter.redraw(ann) },
+        annotationCreated(ann)  { s.highlighter.draw(ann) },
+        annotationDeleted(ann)  { s.highlighter.undraw(ann) },
+        annotationUpdated(ann)  { s.highlighter.redraw(ann) },
 
         beforeAnnotationCreated(annotation) {
             // Editor#load returns a promise that is resolved if editing
