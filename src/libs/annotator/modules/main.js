@@ -1,4 +1,4 @@
-import textselector from 'annotator/src/ui/textselector';
+import TextSelector from '../ui/textselector';
 import Adder from '../ui/adder';
 import Highlighter from '../ui/highlighter';
 import Editor from '../ui/editor';
@@ -230,7 +230,7 @@ export function main(options = {}) {
 
         s.highlighter = new Highlighter(options.element);
 
-        s.textselector = new textselector.TextSelector(options.element, {
+        s.textselector = new TextSelector(options.element, {
             onSelection(ranges, event) {
                 if (ranges.length > 0) {
                     const annotation = makeAnnotation(ranges);
