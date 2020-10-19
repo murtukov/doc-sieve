@@ -1,8 +1,7 @@
-import store from "../../rematch";
+import $ from 'jquery';
+// import store from "../../rematch";
 
 const Range = require('xpath-range').Range;
-const util = require('annotator/src/util');
-const $ = util.$;
 
 
 // highlightRange wraps the DOM Nodes within the provided range with a highlight

@@ -1,6 +1,5 @@
+import $ from 'jquery';
 const Range = require('xpath-range').Range;
-const util = require('annotator/src/util');
-const $ = util.$;
 
 /**
  * isAnnotator determines if the provided element is part of Annotator. Useful

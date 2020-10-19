@@ -1,12 +1,13 @@
 import Widget from "./widget";
 import {escapeHtml, gettext as _t, mousePosition} from "../utils";
+import $ from 'jquery';
 
 // TODO: check why this jquery doesn't work as expected
 //       maybe because it's another instance and need to import it everywhere
 // import $ from 'jquery';
 
-const util = require('annotator/src/util');
-const $ = util.$;
+// const util = require('annotator/src/util');
+// const $ = util.$;
 
 /**
  * Simple parser for hypermedia link structure

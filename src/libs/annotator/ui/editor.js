@@ -12,13 +12,10 @@ const id = (function () {
 // preventEventDefault prevents an event's default, but handles the condition
 // that the event is null or doesn't have a preventDefault function.
 function preventEventDefault(event) {
-    if (typeof event !== 'undefined' &&
-        event !== null &&
-        typeof event.preventDefault === 'function') {
+    if (event.preventDefault) {
         event.preventDefault();
     }
 }
-
 
 // dragTracker is a function which allows a callback to track changes made to
 // the position of a draggable "handle" element.
