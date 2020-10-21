@@ -5,7 +5,7 @@ import $ from 'jquery';
 // id returns an identifier unique within this session
 const id = (function () {
     let counter = -1;
-    return () => counter += 1;
+    return () => counter++;
 }());
 
 
@@ -17,21 +17,22 @@ function preventEventDefault(event) {
     }
 }
 
-// dragTracker is a function which allows a callback to track changes made to
-// the position of a draggable "handle" element.
-//
-// handle - A DOM element to make draggable
-// callback - Callback function
-//
-// Callback arguments:
-//
-// delta - An Object with two properties, "x" and "y", denoting the amount the
-//         mouse has moved since the last (tracked) call.
-//
-// Callback returns: Boolean indicating whether to track the last movement. If
-// the movement is not tracked, then the amount the mouse has moved will be
-// accumulated and passed to the next mousemove event.
-//
+/**
+ * dragTracker is a function which allows a callback to track changes made to
+ * the position of a draggable "handle" element.
+ *
+ * handle - A DOM element to make draggable
+ * callback - Callback function
+ *
+ * Callback arguments:
+ *
+ * delta - An Object with two properties, "x" and "y", denoting the amount the
+ *         mouse has moved since the last (tracked) call.
+ *
+ * Callback returns: Boolean indicating whether to track the last movement. If
+ * the movement is not tracked, then the amount the mouse has moved will be
+ * accumulated and passed to the next mousemove event.
+ */
 export function dragTracker(handle, callback) {
     let lastPos = null;
     let throttled = false;
@@ -103,24 +104,25 @@ export function dragTracker(handle, callback) {
     return {destroy: destroy};
 }
 
-
-// resizer is a component that uses a dragTracker under the hood to track the
-// dragging of a handle element, using that motion to resize another element.
-//
-// element - DOM Element to resize
-// handle - DOM Element to use as a resize handle
-// options - Object of options.
-//
-// Available options:
-//
-// invertedX - If this option is defined as a function, and that function
-//             returns a truthy value, the horizontal sense of the drag will be
-//             inverted. Useful if the drag handle is at the left of the
-//             element, and so dragging left means "grow the element"
-// invertedY - If this option is defined as a function, and that function
-//             returns a truthy value, the vertical sense of the drag will be
-//             inverted. Useful if the drag handle is at the bottom of the
-//             element, and so dragging down means "grow the element"
+/**
+ * resizer is a component that uses a dragTracker under the hood to track the
+ * dragging of a handle element, using that motion to resize another element.
+ *
+ * element - DOM Element to resize
+ * handle - DOM Element to use as a resize handle
+ * options - Object of options.
+ *
+ * Available options:
+ *
+ * invertedX - If this option is defined as a function, and that function
+ *             returns a truthy value, the horizontal sense of the drag will be
+ *             inverted. Useful if the drag handle is at the left of the
+ *             element, and so dragging left means "grow the element"
+ * invertedY - If this option is defined as a function, and that function
+ *             returns a truthy value, the vertical sense of the drag will be
+ *             inverted. Useful if the drag handle is at the bottom of the
+ *             element, and so dragging down means "grow the element"
+ */
 export function resizer(element, handle, options) {
     const $el = $(element);
     if (typeof options === 'undefined' || options === null) {
@@ -168,13 +170,14 @@ export function resizer(element, handle, options) {
     return dragTracker(handle, resize);
 }
 
-
-// mover is a component that uses a dragTracker under the hood to track the
-// dragging of a handle element, using that motion to move another element.
-//
-// element - DOM Element to move
-// handle - DOM Element to use as a move handle
-//
+/**
+ * mover is a component that uses a dragTracker under the hood to track the
+ * dragging of a handle element, using that motion to move another element.
+ *
+ * element - DOM Element to move
+ * handle - DOM Element to use as a move handle
+ *
+ */
 export function mover(element, handle) {
     function move(delta) {
         $(element).css({

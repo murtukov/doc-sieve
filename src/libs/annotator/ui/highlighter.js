@@ -1,16 +1,15 @@
 import $ from 'jquery';
-// import store from "../../rematch";
+import {Range} from 'xpath-range';
 
-const Range = require('xpath-range').Range;
-
-
-// highlightRange wraps the DOM Nodes within the provided range with a highlight
-// element of the specified class and returns the highlight Elements.
-//
-// normedRange - A NormalizedRange to be highlighted.
-// cssClass - A CSS class to use for the highlight (default: 'annotator-hl')
-//
-// Returns an array of highlight Elements.
+/**
+ * highlightRange wraps the DOM Nodes within the provided range with a highlight
+ * element of the specified class and returns the highlight Elements.
+ *
+ * @param normedRange - A NormalizedRange to be highlighted.
+ * @param {string} cssClass - A CSS class to use for the highlight (default: 'annotator-hl')
+ *
+ * Returns an array of highlight Elements.
+ */
 function highlightRange(normedRange, cssClass = 'annotator-hl') {
     const white = /^\s*$/;
 
@@ -24,7 +23,7 @@ function highlightRange(normedRange, cssClass = 'annotator-hl') {
 
     for (let node of nodes) {
         if (!white.test(node.nodeValue)) {
-            const hl = global.document.createElement('span');
+            const hl = document.createElement('span');
             hl.className = cssClass;
             // hl.style.backgroundColor = store.getState().app.selectedConcept.bgColor;
             node.parentNode.replaceChild(hl, node);
@@ -35,9 +34,10 @@ function highlightRange(normedRange, cssClass = 'annotator-hl') {
     return results;
 }
 
-
-// reanchorRange will attempt to normalize a range, swallowing Range.RangeErrors
-// for those ranges which are not reanchorable in the current document.
+/**
+ * reanchorRange will attempt to normalize a range, swallowing Range.RangeErrors
+ * for those ranges which are not reanchorable in the current document.
+ */
 function reanchorRange(range, rootElement) {
     try {
         return Range.sniff(range).normalize(rootElement);
@@ -52,15 +52,16 @@ function reanchorRange(range, rootElement) {
     return null;
 }
 
-
-// Highlighter provides a simple way to draw highlighted <span> tags over
-// annotated ranges within a document.
-//
-// element - The root Element on which to dereference annotation ranges and
-//           draw highlights.
-// options - An options Object containing configuration options for the plugin.
-//           See `Highlighter.options` for available options.
-//
+/**
+ * Highlighter provides a simple way to draw highlighted <span> tags over
+ * annotated ranges within a document.
+ *
+ * element - The root Element on which to dereference annotation ranges and
+ *           draw highlights.
+ * options - An options Object containing configuration options for the plugin.
+ *           See `Highlighter.options` for available options.
+ *
+ */
 class Highlighter {
     options = {
         // The CSS class to apply to drawn highlights
@@ -85,11 +86,13 @@ class Highlighter {
             });
     }
 
-    // Public: Draw highlights for all the given annotations
-    //
-    // annotations - An Array of annotation Objects for which to draw highlights.
-    //
-    // Returns nothing.
+    /**
+     * Public: Draw highlights for all the given annotations
+     *
+     * annotations - An Array of annotation Objects for which to draw highlights.
+     *
+     * Returns nothing.
+     */
     drawAll(annotations) {
         return new Promise((resolve) => {
             let highlights = [];
@@ -120,11 +123,13 @@ class Highlighter {
         });
     }
 
-    // Public: Draw highlights for the annotation.
-    //
-    // annotation - An annotation Object for which to draw highlights.
-    //
-    // Returns an Array of drawn highlight elements.
+    /**
+     * Public: Draw highlights for the annotation.
+     *
+     * annotation - An annotation Object for which to draw highlights.
+     *
+     * Returns an Array of drawn highlight elements.
+     */
     draw(annotation) {
         const normedRanges = [];
 
@@ -161,11 +166,13 @@ class Highlighter {
         return annotation._local.highlights;
     }
 
-    // Public: Remove the drawn highlights for the given annotation.
-    //
-    // annotation - An annotation Object for which to purge highlights.
-    //
-    // Returns nothing.
+    /**
+     * Public: Remove the drawn highlights for the given annotation.
+     *
+     * annotation - An annotation Object for which to purge highlights.
+     *
+     * Returns nothing.
+     */
     undraw(annotation) {
         if (!annotation._local?.highlights) {
             return;
@@ -180,19 +187,23 @@ class Highlighter {
         delete annotation._local.highlights;
     }
 
-    // Public: Redraw the highlights for the given annotation.
-    //
-    // annotation - An annotation Object for which to redraw highlights.
-    //
-    // Returns the list of newly-drawn highlights.
+    /**
+     * Public: Redraw the highlights for the given annotation.
+     *
+     * annotation - An annotation Object for which to redraw highlights.
+     *
+     * Returns the list of newly-drawn highlights.
+     */
     redraw(annotation) {
         this.undraw(annotation);
         return this.draw(annotation);
     }
 }
 
-// standalone is a module that uses the Highlighter to draw/undraw highlights
-// automatically when annotations are created and removed.
+/**
+ * standalone is a module that uses the Highlighter to draw/undraw highlights
+ * automatically when annotations are created and removed.
+ */
 export function standalone(element, options) {
     const widget = new Highlighter(element, options);
 

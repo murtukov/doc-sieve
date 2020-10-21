@@ -1,5 +1,5 @@
 import $ from 'jquery';
-const Range = require('xpath-range').Range;
+import {Range} from 'xpath-range';
 
 /**
  * isAnnotator determines if the provided element is part of Annotator. Useful
@@ -33,8 +33,7 @@ class TextSelector {
         this.options = $.extend(true, {}, TextSelector.options, options);
         this.onSelection = this.options.onSelection;
 
-        if (typeof this.element.ownerDocument !== 'undefined' &&
-            this.element.ownerDocument !== null) {
+        if (this.element.ownerDocument) {
             this.document = this.element.ownerDocument;
 
             $(this.document.body).on(`mouseup.${this.NS}`, (e) => this.checkForEndSelection(e));

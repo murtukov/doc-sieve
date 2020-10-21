@@ -198,7 +198,7 @@ function addPermissionsCheckboxes(editor, ident, authz) {
  *
  */
 export function main(options = {}) {
-    options.element = options.element || global.document.body;
+    options.element = options.element || document.body;
     options.editorExtensions = options.editorExtensions || [];
     options.viewerExtensions = options.viewerExtensions || [];
 
@@ -234,6 +234,7 @@ export function main(options = {}) {
             onSelection(ranges, event) {
                 if (ranges.length > 0) {
                     const annotation = makeAnnotation(ranges);
+                    console.log("Selection happened", annotation);
                     s.interactionPoint = mousePosition(event);
                     s.adder.load(annotation, s.interactionPoint);
                 } else {
