@@ -5,6 +5,7 @@ const app = {
     state: {
         sampleText,
         selectedConcept: null,
+        selectedTextRange: null,
         annotations: [
             {
                 color: "lightgreen",
@@ -65,18 +66,18 @@ const app = {
                 ...state.ontology.slice(conceptIdx + 1)
             ]
         }),
-        setConceptTree(state, newTree) {
-            return {
-                ...state,
-                conceptTree: newTree
-            };
-        },
-        setSelectedConcept: (state, concept) => {
-            return {
-                ...state,
-                selectedConcept: concept
-            };
-        }
+        setConceptTree: (state, newTree) => ({
+            ...state,
+            conceptTree: newTree
+        }),
+        setSelectedConcept: (state, concept) => ({
+            ...state,
+            selectedConcept: concept
+        }),
+        setSelectedTextRange: (state, selectedTextRange) => ({
+            ...state,
+            selectedTextRange
+        }),
         // createTag(state, selection) {
         //     const start = Math.min(selection.anchorOffset, selection.focusOffset);
         //     const end = Math.max(selection.anchorOffset, selection.focusOffset);

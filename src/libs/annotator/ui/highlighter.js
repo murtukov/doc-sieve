@@ -94,10 +94,10 @@ class Highlighter {
      * Returns nothing.
      */
     drawAll(annotations) {
-        return new Promise((resolve) => {
+        return new Promise(resolve => {
             let highlights = [];
 
-            const loader = (annList) => {
+            const loader = annList => {
                 if (!annList) {
                     annList = [];
                 }
@@ -124,7 +124,7 @@ class Highlighter {
     }
 
     /**
-     * Public: Draw highlights for the annotation.
+     * Draw highlights for the annotation.
      *
      * annotation - An annotation Object for which to draw highlights.
      *
@@ -148,10 +148,10 @@ class Highlighter {
         }
 
         for (let normed of normedRanges) {
-            $.merge(
-                annotation._local.highlights,
-                highlightRange(normed, this.options.highlightClass)
-            );
+            annotation._local.highlights = [
+                ...annotation._local.highlights,
+                ...highlightRange(normed, this.options.highlightClass)
+            ];
         }
 
         // Save the annotation data on each highlighter element.
@@ -159,9 +159,10 @@ class Highlighter {
 
         // Add a data attribute for annotation id if the annotation has one
         if (undefined !== annotation.id) {
-            $(annotation._local.highlights)
-                .attr('data-annotation-id', annotation.id);
+            $(annotation._local.highlights).attr('data-annotation-id', annotation.id);
         }
+
+        console.log("draw", annotation);
 
         return annotation._local.highlights;
     }

@@ -1,32 +1,23 @@
 import React, { useEffect, useRef } from 'react';
 import {Range} from 'xpath-range';
-import Highlighter from "../../libs/annotator/ui/highlighter";
 
-const id = (function () {
-    let counter = 0;
-    return () => counter++;
-}());
+const id = ((c = 0) => () => c++)();
 
-function ReactAnnotator({children: text}) {
+function ReactAnnotator({onSelected, children: text, onMount}) {
     const rootRef = useRef(null);
-    let highlighter;
 
-    useEffect(() => {
-        highlighter = new Highlighter(rootRef.current);
-    }, []);
+    useEffect(() => onMount(rootRef), [onMount]);
 
-    function makeAnnotation(ranges, contextEl = document.body, ignoreSelector = '.annotator-hl') {
+    function makeAnnotation(ranges, element = document.body, ignoreSelector = '.annotator-hl') {
         const text = [];
         const serializedRanges = [];
 
-        for (let i = 0; i < ranges.length; i++) {
-            const r = ranges[i];
+        for (let r of ranges) {
             text.push(r.text().trim());
-            serializedRanges.push(r.serialize(contextEl, ignoreSelector));
+            serializedRanges.push(r.serialize(element, ignoreSelector));
         }
 
         return {
-            id: id(),
             quote: text.join(' / '),
             ranges: serializedRanges
         };
@@ -35,9 +26,8 @@ function ReactAnnotator({children: text}) {
     function onSelection(ranges, event) {
         if (ranges.length > 0) {
             const annotation = makeAnnotation(ranges, rootRef.current);
-            console.log("Selection happened", annotation);
+            onSelected(annotation);
             // s.adder.load(annotation);
-            highlighter.draw(annotation);
         } else {
             // s.adder.hide();
         }
@@ -123,9 +113,5 @@ function ReactAnnotator({children: text}) {
         </div>
     );
 }
-
-// ReactAnnotator.propTypes = {
-//     children: PropTypes.string.isRequired
-// };
 
 export default ReactAnnotator;
