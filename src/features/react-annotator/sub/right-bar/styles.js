@@ -6,6 +6,7 @@ export const minWidth = 300;
 export default createUseStyles({
     root: {
         minWidth,
+        maxWidth: minWidth,
         height: 'calc(100vh - 50px)',
         backgroundColor: "#f3f3fb",
         position: "fixed",

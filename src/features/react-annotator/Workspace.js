@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import LeftBar from "./sub/left-bar/LeftBar";
 import sampleText from "../app/sample-text";
 import RightBar from "./sub/right-bar/RightBar";
@@ -7,14 +7,24 @@ import { createUseStyles } from "react-jss";
 import { width as leftBarWidth } from "./sub/left-bar/styles";
 import { minWidth as rightBarWidth } from "./sub/right-bar/styles";
 import ReactAnnotator from "./ReactAnnotator";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import Highlighter from "../../libs/annotator/ui/highlighter";
 
 export const WorkspaceContext = React.createContext(null);
 
 function Workspace() {
     const c = useStyles();
     const annotatorRef = useRef(null);
+    const highlighter = useRef(null);
     const dispatch = useDispatch();
+    const annotations = useSelector(s => s.app.annotations);
+
+    useEffect(() => {
+        if (annotatorRef.current) {
+            highlighter.current = new Highlighter(annotatorRef.current);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [annotatorRef.current]);
 
     function handleSelected(annotation) {
         dispatch.app.setSelectedTextRange(annotation);
@@ -26,10 +36,11 @@ function Workspace() {
 
     return (
         <MainLayout>
-            <WorkspaceContext.Provider value={{annotatorRef}}>
+            <WorkspaceContext.Provider value={{highlighter}}>
                 <LeftBar/>
                 <div id='content' className={c.content}>
                     <ReactAnnotator
+                        annotations={annotations}
                         onSelected={handleSelected}
                         onMount={handleAnnotatorMount}
                     >

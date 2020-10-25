@@ -1,12 +1,19 @@
 import React, { useEffect, useRef } from 'react';
 import {Range} from 'xpath-range';
+import Highlighter from "../../libs/annotator/ui/highlighter";
 
 const id = ((c = 0) => () => c++)();
 
-function ReactAnnotator({onSelected, children: text, onMount}) {
-    const rootRef = useRef(null);
+function ReactAnnotator({onSelected, children: text, onMount, annotations}) {
+    const rootRef = useRef();
+    const highlighter = useRef();
 
-    useEffect(() => onMount(rootRef), [onMount]);
+    useEffect(() => {
+        onMount(rootRef);
+        highlighter.current = new Highlighter(rootRef.current);
+        highlighter.current.drawAll(annotations);
+        // eslint-disable-next-line
+    }, [])
 
     function makeAnnotation(ranges, element = document.body, ignoreSelector = '.annotator-hl') {
         const text = [];
@@ -18,6 +25,7 @@ function ReactAnnotator({onSelected, children: text, onMount}) {
         }
 
         return {
+            id: id(),
             quote: text.join(' / '),
             ranges: serializedRanges
         };
@@ -77,7 +85,7 @@ function ReactAnnotator({onSelected, children: text, onMount}) {
             const browserRange = new Range.BrowserRange(r);
             const normedRange = browserRange.normalize().limit(rootRef.current);
 
-            // If the new range falls fully outside our this.element, we should
+            // If the new range falls fully outside our rootRef.current, we should
             // add it back to the document but not return it from this method.
             if (normedRange === null) {
                 rangesToIgnore.push(r);
@@ -86,7 +94,7 @@ function ReactAnnotator({onSelected, children: text, onMount}) {
             }
         }
 
-        // BrowserRange#normalize() modifies the DOM structure and deselects the
+        // BrowserRange::normalize() modifies the DOM structure and deselects the
         // underlying text as a result. So here we remove the selected ranges and
         // reapply the new ones.
         selection.removeAllRanges();
@@ -96,8 +104,7 @@ function ReactAnnotator({onSelected, children: text, onMount}) {
         }
 
         // Add normed ranges back to the selection
-        for (let item of ranges) {
-            const range = item;
+        for (let range of ranges) {
             const drange = rootRef.current.ownerDocument.createRange();
             drange.setStartBefore(range.start);
             drange.setEndAfter(range.end);

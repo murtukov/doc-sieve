@@ -10,7 +10,7 @@ import {Range} from 'xpath-range';
  *
  * Returns an array of highlight Elements.
  */
-function highlightRange(normedRange, cssClass = 'annotator-hl') {
+function highlightRange(normedRange, cssClass, annotation) {
     const white = /^\s*$/;
 
     // Ignore text nodes that contain only whitespace characters. This prevents
@@ -24,8 +24,9 @@ function highlightRange(normedRange, cssClass = 'annotator-hl') {
     for (let node of nodes) {
         if (!white.test(node.nodeValue)) {
             const hl = document.createElement('span');
-            hl.className = cssClass;
-            // hl.style.backgroundColor = store.getState().app.selectedConcept.bgColor;
+            hl.className = cssClass || 'annotator-hl';
+            hl.style.backgroundColor = annotation.data.bgColor;
+            hl.style.color = annotation.data.textColor;
             node.parentNode.replaceChild(hl, node);
             hl.appendChild(node);
             results.push(hl);
@@ -150,7 +151,7 @@ class Highlighter {
         for (let normed of normedRanges) {
             annotation._local.highlights = [
                 ...annotation._local.highlights,
-                ...highlightRange(normed, this.options.highlightClass)
+                ...highlightRange(normed, this.options.highlightClass, annotation)
             ];
         }
 
@@ -161,8 +162,6 @@ class Highlighter {
         if (undefined !== annotation.id) {
             $(annotation._local.highlights).attr('data-annotation-id', annotation.id);
         }
-
-        console.log("draw", annotation);
 
         return annotation._local.highlights;
     }

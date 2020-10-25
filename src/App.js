@@ -15,7 +15,7 @@ function App() {
                 <Wizard path='wizard'/>
                 <TreeExample path='tree-example'/>
                 <Annotator path='annotator' />
-                <Workspace path='react-annotator'/>
+                <Workspace path='editor'/>
             </Router>
         </Provider>
     );

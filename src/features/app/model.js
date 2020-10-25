@@ -1,18 +1,10 @@
-import sampleText from './sample-text';
 import {mutateTree} from "@atlaskit/tree";
 
 const app = {
     state: {
-        sampleText,
         selectedConcept: null,
         selectedTextRange: null,
-        annotations: [
-            {
-                color: "lightgreen",
-                offset: {"start": 45, "end": 67},
-                type: "section"
-            }
-        ],
+        annotations: [],
         conceptTree: {
             rootId: 'root',
             items: {
@@ -78,22 +70,14 @@ const app = {
             ...state,
             selectedTextRange
         }),
-        // createTag(state, selection) {
-        //     const start = Math.min(selection.anchorOffset, selection.focusOffset);
-        //     const end = Math.max(selection.anchorOffset, selection.focusOffset);
-        //
-        //     return {
-        //         ...state,
-        //         annotations: [
-        //             ...state.annotations,
-        //             {
-        //                 color: 'lightgreen',
-        //                 offset: {start, end},
-        //                 type: 'section',
-        //             }
-        //         ]
-        //     }
-        // }
+        addAnnotation: (state, annotation) => ({
+            ...state,
+            annotations: [...state.annotations, annotation]
+        }),
+        removeAnnotation: (state, annotation) => ({
+            ...state,
+            annotations: state.annotations.filter(el => el.id !== annotation.id)
+        }),
     },
     effects: {}
 };

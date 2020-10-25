@@ -1,26 +1,28 @@
-import React, { useContext, useEffect, useRef } from 'react';
-import { Button } from "@blueprintjs/core";
+import React, {useContext} from 'react';
+import {Button} from "@blueprintjs/core";
+import {useDispatch, useSelector} from "react-redux";
+import {WorkspaceContext} from "../../Workspace";
 import styles from './styles';
-import { useSelector } from "react-redux";
-import { WorkspaceContext } from "../../Workspace";
-import Highlighter from "../../../../libs/annotator/ui/highlighter";
 
 function LeftBar() {
     const c = styles();
-    // const selectedConcept = useSelector(s => s.app.selectedConcept);
-    const selectedTextRange = useSelector(s => s.app.selectedTextRange);
-    const {annotatorRef} = useContext(WorkspaceContext);
-    const highlighter = useRef(null);
-
-    useEffect(() => {
-        if (annotatorRef.current) {
-            highlighter.current = new Highlighter(annotatorRef.current);
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [annotatorRef.current]);
+    const {selectedConcept, selectedTextRange, annotations} = useSelector(s => s.app);
+    const dispatch = useDispatch();
+    const {highlighter} = useContext(WorkspaceContext);
 
     function createAnnotation() {
-        highlighter.current.draw(selectedTextRange);
+        const annotation = {
+            ...selectedTextRange,
+            data: selectedConcept
+        };
+
+        dispatch.app.addAnnotation(annotation);
+        highlighter.current.draw(annotation);
+        dispatch.app.setSelectedTextRange(null);
+    }
+
+    function saveAnnotations() {
+        console.log(annotations);
     }
 
     return (
@@ -28,11 +30,12 @@ function LeftBar() {
             <Button
                 icon='new-text-box'
                 onClick={createAnnotation}
-                disabled={!selectedTextRange}
+                disabled={!selectedTextRange || !selectedConcept}
                 minimal
             />
             <Button
                 icon='floppy-disk'
+                onClick={saveAnnotations}
                 minimal
             />
             <Button icon='edit' minimal disabled/>
