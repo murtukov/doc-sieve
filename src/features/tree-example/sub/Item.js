@@ -12,6 +12,13 @@ function Item({item, onExpand, onCollapse, provided}) {
         dispatch.app.setSelectedConcept(item.data);
     }
 
+    function removeConcept() {
+        if(!window.confirm('Remove the concept?')) {
+            return;
+        }
+        dispatch.app.removeConcept(item.data.name);
+    }
+
     return (
         <div
             className={c.item}
@@ -22,6 +29,7 @@ function Item({item, onExpand, onCollapse, provided}) {
         >
             <span className={c.iconWrapper}>{getIcon(item, onExpand, onCollapse, c)}</span>
             <span className={c.name}>{item.data.name}</span>
+            <Button icon='trash' onClick={removeConcept} minimal/>
         </div>
     );
 }

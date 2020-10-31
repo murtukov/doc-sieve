@@ -51,13 +51,23 @@ const app = {
                 conceptTree: mutateTree(newTree, newConcept.parentId || 'root', { children: newChildren })
             });
         },
-        removeConcept: (state, conceptIdx) => ({
-            ...state,
-            ontology: [
-                ...state.ontology.slice(0, conceptIdx),
-                ...state.ontology.slice(conceptIdx + 1)
-            ]
-        }),
+        removeConcept: (state, conceptId) => {
+            const tree = state.conceptTree;
+
+            const newTree = {
+                rootId: tree.rootId,
+                items: {
+                    ...tree.items,
+                },
+            };
+
+            removeTreeBranch(newTree.items, conceptId);
+
+            return ({
+                ...state,
+                conceptTree: mutateTree(newTree, 'root', {})
+            });
+        },
         setConceptTree: (state, newTree) => ({
             ...state,
             conceptTree: newTree
@@ -81,5 +91,28 @@ const app = {
     },
     effects: {}
 };
+
+function removeTreeBranch(items, branchId) {
+    const children = items[branchId].children;
+
+    // Remove the element itself
+    purgeTreeFromItem(items, branchId);
+
+    // Remove it's children
+    for (let child of children) {
+        removeTreeBranch(items, child);
+    }
+}
+
+function purgeTreeFromItem(items, itemId) {
+    delete items[itemId]
+
+    Object.keys(items).forEach(i => {
+        const index = items[i].children.indexOf(itemId);
+        if (index > -1) {
+            items[i].children.splice(index, 1);
+        }
+    });
+}
 
 export default app;
