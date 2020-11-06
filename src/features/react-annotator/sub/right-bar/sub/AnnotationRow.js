@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { createUseStyles } from "react-jss";
-import { Icon } from "@blueprintjs/core";
+import {Button, Icon} from "@blueprintjs/core";
 import { WorkspaceContext } from "../../../Workspace";
 import { useDispatch } from "react-redux";
 
@@ -16,9 +16,13 @@ function AnnotationRow({data}) {
 
     return (
         <div className={c.root}>
-            <Icon icon='full-circle' color={data.data.bgColor}/>
-            <div className={c.quote}>{data.quote}</div>span>
-            <Icon icon='cross' onClick={removeAnnotation}/>
+            <Icon
+                className={c.icon}
+                icon='full-circle'
+                color={data.data.bgColor}
+            />
+            <div className={c.quote}>{data.quote}</div>
+            <Button icon={"cross"} minimal onClick={removeAnnotation}/>
         </div>
     );
 }
@@ -27,13 +31,18 @@ const useStyles = createUseStyles({
     root: {
         display: 'flex',
         flexDirection: 'row',
+        padding: [0, 10],
+        alignItems: "center"
+    },
+    quote: {
+        width: 245,
+        display: 'block',
         whiteSpace: 'nowrap',
         overflow: 'hidden',
         textOverflow: 'ellipsis',
-        padding: 10,
     },
-    quote: {
-        width: 200
+    icon: {
+        marginRight: 5
     }
 });
 

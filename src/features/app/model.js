@@ -82,7 +82,7 @@ const app = {
         }),
         addAnnotation: (state, annotation) => ({
             ...state,
-            annotations: [...state.annotations, annotation]
+            annotations: [...state.annotations, {...annotation}]
         }),
         removeAnnotation: (state, annotation) => ({
             ...state,
