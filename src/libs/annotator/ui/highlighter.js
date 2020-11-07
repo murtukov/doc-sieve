@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import {Range} from 'xpath-range';
+import chroma from 'chroma-js';
 
 /**
  * highlightRange wraps the DOM Nodes within the provided range with a highlight
@@ -25,8 +26,16 @@ function highlightRange(normedRange, cssClass, annotation) {
         if (!white.test(node.nodeValue)) {
             const hl = document.createElement('span');
             hl.className = cssClass || 'annotator-hl';
-            hl.style.backgroundColor = annotation.data.bgColor;
+
+            // Get rgba representation of bg color
+            const rgba = chroma(annotation.data.bgColor).rgba();
+            // Make it 50% transparent
+            rgba[3] = 0.5;
+            // Convert to hex and set to the element
+            hl.style.backgroundColor = chroma(rgba).hex();
+
             hl.style.color = annotation.data.textColor;
+
             node.parentNode.replaceChild(hl, node);
             hl.appendChild(node);
             results.push(hl);
@@ -174,6 +183,7 @@ class Highlighter {
      * Returns nothing.
      */
     undraw(annotation) {
+        debugger;
         if (!annotation._local?.highlights) {
             return;
         }
