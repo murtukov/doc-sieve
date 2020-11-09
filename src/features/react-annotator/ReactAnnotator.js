@@ -3,8 +3,6 @@ import {Range} from 'xpath-range';
 import Highlighter from "../../libs/annotator/ui/highlighter";
 import { v4 as uuidv4 } from 'uuid';
 
-const id = ((c = 0) => () => c++)();
-
 function ReactAnnotator({onSelected, children: text, onMount, annotations}) {
     const rootRef = useRef();
     const highlighter = useRef();

@@ -13,7 +13,7 @@ function RightBar() {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 
     const getAnnotations = () =>
-        annotations.map((anno, i) => <AnnotationRow key={i} data={anno}/>);
+        annotations.map((anno, i) => <AnnotationRow key={i} annotation={anno}/>);
 
     const getTagPlaceholder = () =>
         <p className={c.placeholder}>No tags yet!</p>;
