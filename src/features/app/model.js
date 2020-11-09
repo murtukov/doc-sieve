@@ -81,24 +81,15 @@ const app = {
             selectedTextRange
         }),
         addAnnotation: (state, annotation) => {
-            debugger;
             return ({
                 ...state,
                 annotations: [...state.annotations, annotation]
             });
         },
-        removeAnnotation: (state, annotation) => {
-            const anns = state.annotations.filter(el => {
-                console.log(el, annotation);
-                return el.id !== annotation.id;
-            });
-
-            console.log("Filtered:", anns);
-            return ({
-                ...state,
-                annotations: anns
-            });
-        },
+        removeAnnotation: (state, annotation) => ({
+            ...state,
+            annotations: state.annotations.filter(a => a.id !== annotation.id)
+        }),
     },
     effects: {}
 };

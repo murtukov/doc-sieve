@@ -15,9 +15,9 @@ function LeftBar() {
             ...selectedTextRange,
             data: selectedConcept
         };
-
-        dispatch.app.addAnnotation(annotation);
+        debugger;
         highlighter.current.draw(annotation);
+        dispatch.app.addAnnotation(annotation);
         dispatch.app.setSelectedTextRange(null);
     }
 

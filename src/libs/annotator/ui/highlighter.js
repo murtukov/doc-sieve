@@ -73,6 +73,8 @@ function reanchorRange(range, rootElement) {
  *
  */
 class Highlighter {
+    highlights = {};
+
     options = {
         // The CSS class to apply to drawn highlights
         highlightClass: 'annotator-hl',
@@ -150,29 +152,16 @@ class Highlighter {
             }
         }
 
-        if (!annotation._local) {
-            annotation._local = {};
-        }
-        if (!annotation._local.highlights) {
-            annotation._local.highlights = [];
-        }
-
+        let elements = [];
         for (let normed of normedRanges) {
-            annotation._local.highlights = [
-                ...annotation._local.highlights,
-                ...highlightRange(normed, this.options.highlightClass, annotation)
-            ];
+            elements = highlightRange(normed, this.options.highlightClass, annotation);
         }
 
-        // Save the annotation data on each highlighter element.
-        $(annotation._local.highlights).data('annotation', annotation);
-
-        // Add a data attribute for annotation id if the annotation has one
-        if (undefined !== annotation.id) {
-            $(annotation._local.highlights).attr('data-annotation-id', annotation.id);
+        for (let el of elements) {
+            el.dataset.annotationId = annotation.id;
         }
 
-        return annotation._local.highlights;
+        return elements;
     }
 
     /**
@@ -183,18 +172,15 @@ class Highlighter {
      * Returns nothing.
      */
     undraw(annotation) {
-        debugger;
-        if (!annotation._local?.highlights) {
-            return;
-        }
+        const elements = document.querySelectorAll(`[data-annotation-id="${annotation.id}"]`)
 
-        for (let i = 0; i < annotation._local.highlights.length; i++) {
-            const h = annotation._local.highlights[i];
-            if (null !== h.parentNode) {
-                $(h).replaceWith(h.childNodes);
+        for (let el of elements) {
+            if (null !== el.parentNode) {
+                $(el).replaceWith(el.childNodes);
             }
         }
-        delete annotation._local.highlights;
+
+        delete this.highlights[annotation.id];
     }
 
     /**
