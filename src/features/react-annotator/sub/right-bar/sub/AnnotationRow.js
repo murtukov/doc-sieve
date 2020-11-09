@@ -45,8 +45,6 @@ function AnnotationRow({annotation}) {
     }
 
     function handleClick(event) {
-        console.log(event.target);
-        console.log(event.currentTarget);
         const elements = getAnnotatedElements(annotation.id);
         elements[0].scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"})
     }
