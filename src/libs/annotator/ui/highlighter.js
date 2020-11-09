@@ -181,6 +181,8 @@ class Highlighter {
             }
         }
 
+        this.element.normalize();
+
         delete this.highlights[annotation.id];
     }
 

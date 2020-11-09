@@ -5,7 +5,7 @@ export default createUseStyles({
         display: "flex",
         alignItems: "center",
         margin: [2, 10, 2, 3],
-        border: isSelected ? [2, 'solid', 'deepskyblue'] : [2, 'solid', '#f3f3fb'],
+        border: isSelected ? [1, 'solid', 'black'] : [1, 'solid', '#f3f3fb'],
         borderRadius: 3
     }),
     name: ({textColor, bgColor}) => ({

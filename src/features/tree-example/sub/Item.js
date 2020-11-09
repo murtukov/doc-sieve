@@ -40,17 +40,17 @@ function getIcon(item, onExpand, onCollapse, c) {
             <Button
                 className={c.iconBtn}
                 icon='chevron-down'
+                onClick={() => onCollapse(item.id)}
                 minimal
                 small
-                onClick={() => onCollapse(item.id)}
             />
             :
             <Button
                 className={c.iconBtn}
                 icon='chevron-right'
+                onClick={() => onExpand(item.id)}
                 minimal
                 small
-                onClick={() => onExpand(item.id)}
             />
     }
 

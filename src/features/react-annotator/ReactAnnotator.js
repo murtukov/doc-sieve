@@ -34,9 +34,8 @@ function ReactAnnotator({onSelected, children: text, onMount, annotations}) {
         if (ranges.length > 0) {
             const annotation = makeAnnotation(ranges, rootRef.current);
             onSelected(annotation);
-            // s.adder.load(annotation);
         } else {
-            // s.adder.hide();
+            onSelected(null)
         }
     }
 

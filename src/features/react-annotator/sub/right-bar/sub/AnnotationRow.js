@@ -19,14 +19,18 @@ function AnnotationRow({annotation}) {
         const elements = getAnnotatedElements(annotation.id);
 
         for (let el of elements) {
-            highlightElement(el);
+            changeBgOpacity(el, 1);
+            // make all children bgcolor opacity 0
+            el.querySelectorAll('*').forEach(el => changeBgOpacity(el, 0))
         }
     }
 
     function handleMouseLeave() {
         const elements = getAnnotatedElements(annotation.id);
         for (let el of elements) {
-            unhighlightElement(el);
+            changeBgOpacity(el, 0.5);
+            // make all children bgcolor opacity 0
+            el.querySelectorAll('*').forEach(el => changeBgOpacity(el, 0.5))
         }
     }
 
@@ -34,18 +38,26 @@ function AnnotationRow({annotation}) {
         return document.querySelectorAll(`[data-annotation-id="${id}"]`);
     }
 
-    function highlightElement(element) {
+    function changeBgOpacity(element, opacity) {
         const color = chroma(element.style.backgroundColor);
-        element.style.backgroundColor = color.alpha(1).css();
+        element.style.backgroundColor = color.alpha(opacity).css();
+        // element.style.textShadow = '2px 2px 8px #FF0000';
     }
 
-    function unhighlightElement(element) {
-        const color = chroma(element.style.backgroundColor);
-        element.style.backgroundColor = color.alpha(0.5).css();
+    function handleClick(event) {
+        console.log(event.target);
+        console.log(event.currentTarget);
+        const elements = getAnnotatedElements(annotation.id);
+        elements[0].scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"})
     }
 
     return (
-        <div className={c.root} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+        <div
+            className={c.root}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+            onClickCapture={handleClick}
+        >
             <Icon
                 className={c.icon}
                 icon='full-circle'
@@ -62,7 +74,8 @@ const useStyles = createUseStyles({
         display: 'flex',
         flexDirection: 'row',
         padding: [0, 10],
-        alignItems: "center"
+        alignItems: "center",
+        cursor: "pointer"
     },
     quote: {
         width: 245,
