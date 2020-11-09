@@ -6,8 +6,9 @@ import chroma from 'chroma-js';
  * highlightRange wraps the DOM Nodes within the provided range with a highlight
  * element of the specified class and returns the highlight Elements.
  *
- * @param normedRange - A NormalizedRange to be highlighted.
- * @param {string} cssClass - A CSS class to use for the highlight (default: 'annotator-hl')
+ * @param {object} normedRange - A NormalizedRange to be highlighted.
+ * @param {string} cssClass    - A CSS class to use for the highlight (default: 'annotator-hl')
+ * @param {object} annotation
  *
  * Returns an array of highlight Elements.
  */

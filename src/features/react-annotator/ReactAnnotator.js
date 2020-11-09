@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import {Range} from 'xpath-range';
 import Highlighter from "../../libs/annotator/ui/highlighter";
+import { v4 as uuidv4 } from 'uuid';
 
 const id = ((c = 0) => () => c++)();
 
@@ -25,7 +26,7 @@ function ReactAnnotator({onSelected, children: text, onMount, annotations}) {
         }
 
         return {
-            id: id(),
+            id: uuidv4(),
             quote: text.join(' / '),
             ranges: serializedRanges
         };

@@ -2,6 +2,7 @@ import React, {useContext} from 'react';
 import {Button} from "@blueprintjs/core";
 import {useDispatch, useSelector} from "react-redux";
 import {WorkspaceContext} from "../../Workspace";
+import { saveAs } from 'file-saver';
 import styles from './styles';
 
 function LeftBar() {
@@ -15,14 +16,15 @@ function LeftBar() {
             ...selectedTextRange,
             data: selectedConcept
         };
-        debugger;
+
         highlighter.current.draw(annotation);
         dispatch.app.addAnnotation(annotation);
         dispatch.app.setSelectedTextRange(null);
     }
 
     function saveAnnotations() {
-        console.log(annotations);
+        const blob = new Blob([JSON.stringify(annotations)], {type: "text/plain;charset=utf-8"});
+        saveAs(blob, "annotations.txt");
     }
 
     return (
@@ -37,6 +39,7 @@ function LeftBar() {
                 icon='floppy-disk'
                 onClick={saveAnnotations}
                 minimal
+                disabled={annotations.length === 0}
             />
             <Button icon='edit' minimal disabled/>
             <Button icon='text-highlight' minimal disabled/>
