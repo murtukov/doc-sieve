@@ -4,7 +4,7 @@ import {Button, Classes, Icon, Popover, Position, Menu, MenuItem} from "@bluepri
 import {createUseStyles} from "react-jss";
 import {useDispatch} from "react-redux";
 
-function Concept({data, index}) {
+function ConceptRow({data, index}) {
     const c = useStyles();
     const {bgColor, textColor, name} = data;
     const dispatch = useDispatch();
@@ -58,4 +58,4 @@ const useStyles = createUseStyles({
     // }
 });
 
-export default Concept;
+export default ConceptRow;

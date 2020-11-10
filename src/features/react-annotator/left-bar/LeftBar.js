@@ -1,7 +1,7 @@
 import React, {useContext} from 'react';
 import {Button} from "@blueprintjs/core";
 import {useDispatch, useSelector} from "react-redux";
-import {WorkspaceContext} from "../../Workspace";
+import {WorkspaceContext} from "../Workspace";
 import { saveAs } from 'file-saver';
 import styles from './styles';
 import {useDropzone} from "react-dropzone";

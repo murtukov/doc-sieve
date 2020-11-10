@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { createUseStyles } from "react-jss";
 import {Button, Icon} from "@blueprintjs/core";
-import { WorkspaceContext } from "../../../Workspace";
+import { WorkspaceContext } from "../../Workspace";
 import { useDispatch } from "react-redux";
 import chroma from 'chroma-js';
 

@@ -1,11 +1,11 @@
 import React, { useEffect, useRef } from 'react';
-import LeftBar from "./sub/left-bar/LeftBar";
+import LeftBar from "./left-bar/LeftBar";
 import sampleText from "../app/sample-text";
-import RightBar from "./sub/right-bar/RightBar";
+import RightBar from "./right-bar/RightBar";
 import MainLayout from "../../layouts/MainLayout";
 import { createUseStyles } from "react-jss";
-import { width as leftBarWidth } from "./sub/left-bar/styles";
-import { minWidth as rightBarWidth } from "./sub/right-bar/styles";
+import { width as leftBarWidth } from "./left-bar/styles";
+import { minWidth as rightBarWidth } from "./right-bar/styles";
 import ReactAnnotator from "./ReactAnnotator";
 import { useDispatch, useSelector } from "react-redux";
 import Highlighter from "../../libs/annotator/ui/highlighter";

@@ -1,6 +1,6 @@
 import React from 'react';
 import {H6} from "@blueprintjs/core";
-import useStyles from '../styles';
+import useStyles from './styles';
 
 function Block({title, actions, children}) {
     const c = useStyles();

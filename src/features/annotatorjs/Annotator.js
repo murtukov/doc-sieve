@@ -7,8 +7,8 @@ import {main as CustomModule} from '../../libs/annotator/modules/main';
 import LeftBar from "./sub/left-bar/LeftBar";
 import RightBar from "./sub/right-bar/RightBar";
 import {createUseStyles} from "react-jss";
-import {width as leftBarWidth} from "../react-annotator/sub/left-bar/styles";
-import {minWidth as rightBarWidth} from "../react-annotator/sub/right-bar/styles";
+import {width as leftBarWidth} from "../react-annotator/left-bar/styles";
+import {minWidth as rightBarWidth} from "../react-annotator/right-bar/styles";
 
 function myModule() {
     return {

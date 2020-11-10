@@ -1,5 +1,4 @@
 import {createUseStyles} from "react-jss";
-import {Colors} from "@blueprintjs/core";
 
 export const minWidth = 300;
 
@@ -13,10 +12,6 @@ export default createUseStyles({
         right: 0,
         display: "flex",
         flexDirection: "column"
-    },
-    placeholder: {
-        color: Colors.GRAY3,
-        textAlign: "center"
     },
     block: {
         flexGrow: 1
