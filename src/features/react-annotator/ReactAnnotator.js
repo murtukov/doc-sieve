@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import {Range} from 'xpath-range';
 import Highlighter from "../../libs/annotator/ui/highlighter";
 import { v4 as uuidv4 } from 'uuid';
+import Dropzone from "./sub/Dropzone";
 
 function ReactAnnotator({onSelected, children: text, onMount, annotations}) {
     const rootRef = useRef();
@@ -12,7 +13,7 @@ function ReactAnnotator({onSelected, children: text, onMount, annotations}) {
         highlighter.current = new Highlighter(rootRef.current);
         highlighter.current.drawAll(annotations);
         // eslint-disable-next-line
-    }, [])
+    }, [text])
 
     function makeAnnotation(ranges, element = document.body, ignoreSelector = '.annotator-hl') {
         const text = [];
@@ -110,6 +111,10 @@ function ReactAnnotator({onSelected, children: text, onMount, annotations}) {
         }
 
         return ranges;
+    }
+
+    if (!text) {
+        return <Dropzone/>
     }
 
     return (

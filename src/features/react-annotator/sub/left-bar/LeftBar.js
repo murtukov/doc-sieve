@@ -4,12 +4,27 @@ import {useDispatch, useSelector} from "react-redux";
 import {WorkspaceContext} from "../../Workspace";
 import { saveAs } from 'file-saver';
 import styles from './styles';
+import {useDropzone} from "react-dropzone";
 
 function LeftBar() {
     const c = styles();
     const {selectedConcept, selectedTextRange, annotations} = useSelector(s => s.app);
     const dispatch = useDispatch();
     const {highlighter} = useContext(WorkspaceContext);
+
+    const {open, getRootProps, getInputProps} = useDropzone({
+        multiple: false,
+        onDrop
+    });
+
+    function onDrop(files) {
+        const reader = new FileReader();
+        reader.addEventListener('load', (event) => {
+            const base64 = event.target.result.split(',')[1];
+            dispatch.app.setText(Buffer.from(base64, "base64").toString());
+        });
+        reader.readAsDataURL(files[0]);
+    }
 
     function createAnnotation() {
         const annotation = {
@@ -27,6 +42,10 @@ function LeftBar() {
         saveAs(blob, "annotations.txt");
     }
 
+    function openFile() {
+        open();
+    }
+
     return (
         <div className={c.root}>
             <Button
@@ -41,8 +60,12 @@ function LeftBar() {
                 minimal
                 disabled={annotations.length === 0}
             />
-            <Button icon='edit' minimal disabled/>
-            <Button icon='text-highlight' minimal disabled/>
+            <Button
+                icon='folder-open'
+                minimal
+                onClick={openFile}
+            />
+            <input {...getInputProps()} />
         </div>
     );
 }

@@ -18,6 +18,7 @@ function Workspace() {
     const highlighter = useRef(null);
     const dispatch = useDispatch();
     const annotations = useSelector(s => s.app.annotations);
+    const text = useSelector(s => s.app.text);
 
     useEffect(() => {
         if (annotatorRef.current) {
@@ -44,7 +45,7 @@ function Workspace() {
                         onSelected={handleSelected}
                         onMount={handleAnnotatorMount}
                     >
-                        {sampleText}
+                        {text}
                     </ReactAnnotator>
                 </div>
                 <RightBar/>
@@ -55,6 +56,7 @@ function Workspace() {
 
 const useStyles = createUseStyles({
     content: {
+        flexGrow: 1,
         marginLeft: leftBarWidth,
         marginRight: rightBarWidth,
         whiteSpace: "pre-line",

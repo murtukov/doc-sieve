@@ -2,6 +2,7 @@ import {mutateTree} from "@atlaskit/tree";
 
 const app = {
     state: {
+        text: '', // editor text
         selectedConcept: null,
         selectedTextRange: null,
         annotations: [],
@@ -22,6 +23,7 @@ const app = {
         }
     },
     reducers: {
+        setText: (state, text) => ({...state, text}),
         addConcept: (state, newConcept) => {
             const tree = state.conceptTree;
 
