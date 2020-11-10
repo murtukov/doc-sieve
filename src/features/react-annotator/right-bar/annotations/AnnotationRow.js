@@ -10,7 +10,8 @@ function AnnotationRow({annotation}) {
     const {highlighter} = useContext(WorkspaceContext);
     const dispatch = useDispatch();
 
-    function removeAnnotation() {
+    function removeAnnotation(event) {
+        event.stopPropagation();
         highlighter.current.undraw(annotation);
         dispatch.app.removeAnnotation(annotation);
     }

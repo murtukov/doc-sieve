@@ -1,18 +1,13 @@
-import React, {useState} from 'react';
+import React from 'react';
 import Block from "../Block";
 import {Button, Colors, Menu, MenuItem, Popover} from "@blueprintjs/core";
 import {useSelector} from "react-redux";
 import AnnotationRow from "./AnnotationRow";
 import {createUseStyles} from "react-jss";
-import ExportDialog from "./ExportDialog";
 
-function Annotations(props) {
+function Annotations() {
     const c = useStyles();
-    const [isDialogOpen, setIsDialogOpen] = useState(false);
     const {annotations} = useSelector(s => s.app);
-
-    const closeDialog = () => setIsDialogOpen(false);
-    const openDialog  = () => setIsDialogOpen(true);
 
     const getAnnotations = () => {
         return annotations.map((anno, i) =>
@@ -24,31 +19,29 @@ function Annotations(props) {
         return <p className={c.placeholder}>No tags yet!</p>;
     };
 
-    const menu = (
-        <Menu>
-            <MenuItem
-                text='Import annotations'
-                icon='import'
-            />
-            <MenuItem
-                text='Export annotations'
-                icon='export'
-                disabled={annotations.length === 0}
-                onClick={openDialog}
-            />
-        </Menu>
-    );
+    // const menu = (
+    //     <Menu>
+    //         <MenuItem
+    //             text='Import annotations'
+    //             icon='import'
+    //         />
+    //         <MenuItem
+    //             text='Export annotations'
+    //             icon='export'
+    //             disabled={annotations.length === 0}
+    //         />
+    //     </Menu>
+    // );
 
-    const menuBtn = (
-        <Popover content={menu}>
-            <Button icon='menu' minimal onClick={() => 0}/>
-        </Popover>
-
-    );
+    // const menuBtn = (
+    //     <Popover content={menu}>
+    //         <Button icon='menu' minimal onClick={() => 0}/>
+    //     </Popover>
+    //
+    // );
 
     return <>
-        <ExportDialog isOpen={isDialogOpen} onClose={closeDialog}/>
-        <Block title='Annotations' actions={menuBtn}>
+        <Block title='Annotations'>
             {annotations.length > 0 ? getAnnotations() : getTagPlaceholder()}
         </Block>
     </>;

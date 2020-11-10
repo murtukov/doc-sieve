@@ -1,18 +1,23 @@
-import React, {useContext} from 'react';
+import React, {useContext, useState} from 'react';
 import {Button} from "@blueprintjs/core";
 import {useDispatch, useSelector} from "react-redux";
 import {WorkspaceContext} from "../Workspace";
 import { saveAs } from 'file-saver';
 import styles from './styles';
 import {useDropzone} from "react-dropzone";
+import ExportDialog from "./ExportDialog";
 
 function LeftBar() {
     const c = styles();
     const {selectedConcept, selectedTextRange, annotations} = useSelector(s => s.app);
     const dispatch = useDispatch();
     const {highlighter} = useContext(WorkspaceContext);
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-    const {open, getRootProps, getInputProps} = useDropzone({
+    const closeDialog = () => setIsDialogOpen(false);
+    const openDialog  = () => setIsDialogOpen(true);
+
+    const {open, getInputProps} = useDropzone({
         multiple: false,
         onDrop
     });
@@ -42,12 +47,9 @@ function LeftBar() {
         saveAs(blob, "annotations.txt");
     }
 
-    function openFile() {
-        open();
-    }
-
     return (
         <div className={c.root}>
+            <ExportDialog isOpen={isDialogOpen} onClose={closeDialog}/>
             <Button
                 icon='new-text-box'
                 onClick={createAnnotation}
@@ -55,17 +57,22 @@ function LeftBar() {
                 minimal
             />
             <Button
+                icon='folder-open'
+                minimal
+                onClick={open}
+            />
+            <input {...getInputProps()} />
+            <Button
                 icon='floppy-disk'
                 onClick={saveAnnotations}
                 minimal
                 disabled={annotations.length === 0}
             />
             <Button
-                icon='folder-open'
+                icon='export'
+                onClick={openDialog}
                 minimal
-                onClick={openFile}
             />
-            <input {...getInputProps()} />
         </div>
     );
 }
