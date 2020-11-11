@@ -16,5 +16,9 @@ export default createUseStyles({
         '& button': {
             height: 50
         }
+    },
+    btn: {
+        width: 50,
+        height: 50
     }
 });

@@ -1,24 +1,13 @@
 import React from 'react';
 import {useDropzone} from "react-dropzone";
 import {createUseStyles} from "react-jss";
-import {useDispatch} from "react-redux";
 
-function Dropzone() {
+function Dropzone({onDrop, multiple = false}) {
     const c = useStyles();
-    const dispatch = useDispatch();
     const {getRootProps, getInputProps} = useDropzone({
-        multiple: false,
+        multiple,
         onDrop
     });
-
-    function onDrop(files) {
-        const reader = new FileReader();
-        reader.addEventListener('load', (event) => {
-            const base64 = event.target.result.split(',')[1];
-            dispatch.app.setText(Buffer.from(base64, "base64").toString());
-        });
-        reader.readAsDataURL(files[0]);
-    }
 
     return (
         <div className={c.root} {...getRootProps()}>
@@ -44,7 +33,6 @@ const useStyles = createUseStyles({
         color: '#bdbdbd',
         outline: 'none',
         transition: 'border .24s ease-in-out',
-        marginTop: "20%",
         height: 200,
 
         '&:focus': {

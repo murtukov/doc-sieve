@@ -48,13 +48,13 @@ function ExportDialog({onClose, isOpen}) {
     return (
         <Dialog isOpen={isOpen} onClose={onClose} canEscapeKeyClose>
             <div className={Classes.DIALOG_HEADER}>
-                <Icon icon='clean'/>
+                <Icon icon='export'/>
                 <H4>Export data</H4>
                 <Button icon='cross' minimal onClick={onClose}/>
             </div>
 
             <div className={Classes.DIALOG_BODY}>
-                <h3>Include:</h3>
+                <p>Include:</p>
                 <Checkbox
                     label='Annotations'
                     checked={checked.annotations}

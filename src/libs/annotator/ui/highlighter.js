@@ -27,16 +27,9 @@ function highlightRange(normedRange, cssClass, annotation) {
         if (!white.test(node.nodeValue)) {
             const hl = document.createElement('span');
             hl.className = cssClass || 'annotator-hl';
-
-            // Get rgba representation of bg color
-            const rgba = chroma(annotation.data.bgColor).rgba();
-            // Make it 50% transparent
-            rgba[3] = 0.5;
             // Convert to hex and set to the element
-            hl.style.backgroundColor = chroma(rgba).hex();
-
+            hl.style.backgroundColor = chroma(annotation.data.bgColor).alpha(0.5).css();
             hl.style.color = annotation.data.textColor;
-
             node.parentNode.replaceChild(hl, node);
             hl.appendChild(node);
             results.push(hl);

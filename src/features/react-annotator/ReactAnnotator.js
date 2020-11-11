@@ -3,10 +3,12 @@ import {Range} from 'xpath-range';
 import Highlighter from "../../libs/annotator/ui/highlighter";
 import { v4 as uuidv4 } from 'uuid';
 import Dropzone from "./sub/Dropzone";
+import {useDispatch} from "react-redux";
 
 function ReactAnnotator({onSelected, children: text, onMount, annotations}) {
     const rootRef = useRef();
     const highlighter = useRef();
+    const dispatch = useDispatch();
 
     useEffect(() => {
         onMount(rootRef);
@@ -113,8 +115,17 @@ function ReactAnnotator({onSelected, children: text, onMount, annotations}) {
         return ranges;
     }
 
+    function handleOnDrop(files) {
+        const reader = new FileReader();
+        reader.addEventListener('load', (event) => {
+            const base64 = event.target.result.split(',')[1];
+            dispatch.app.setText(Buffer.from(base64, "base64").toString());
+        });
+        reader.readAsDataURL(files[0]);
+    }
+
     if (!text) {
-        return <Dropzone/>
+        return <Dropzone onDrop={handleOnDrop}/>
     }
 
     return (

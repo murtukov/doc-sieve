@@ -1,21 +1,26 @@
 import React, {useContext, useState} from 'react';
-import {Button} from "@blueprintjs/core";
+import {AnchorButton, Position, Tooltip} from "@blueprintjs/core";
 import {useDispatch, useSelector} from "react-redux";
 import {WorkspaceContext} from "../Workspace";
-import { saveAs } from 'file-saver';
-import styles from './styles';
 import {useDropzone} from "react-dropzone";
 import ExportDialog from "./ExportDialog";
+import ImportDialog from "./ImportDialog";
+import styles from "./styles";
 
 function LeftBar() {
     const c = styles();
-    const {selectedConcept, selectedTextRange, annotations} = useSelector(s => s.app);
+    const {selectedConcept, selectedTextRange} = useSelector(s => s.app);
     const dispatch = useDispatch();
     const {highlighter} = useContext(WorkspaceContext);
-    const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-    const closeDialog = () => setIsDialogOpen(false);
-    const openDialog  = () => setIsDialogOpen(true);
+    const [isExportDialogOpen, setIsExportDialogOpen] = useState(false);
+    const [isImportDialogOpen, setIsImportDialogOpen] = useState(false);
+
+    const closeExportDialog = () => setIsExportDialogOpen(false);
+    const openExportDialog  = () => setIsExportDialogOpen(true);
+
+    const closeImportDialog = () => setIsImportDialogOpen(false);
+    const openImportDialog  = () => setIsImportDialogOpen(true);
 
     const {open, getInputProps} = useDropzone({
         multiple: false,
@@ -42,37 +47,49 @@ function LeftBar() {
         dispatch.app.setSelectedTextRange(null);
     }
 
-    function saveAnnotations() {
-        const blob = new Blob([JSON.stringify(annotations)], {type: "text/plain;charset=utf-8"});
-        saveAs(blob, "annotations.txt");
-    }
-
     return (
         <div className={c.root}>
-            <ExportDialog isOpen={isDialogOpen} onClose={closeDialog}/>
-            <Button
-                icon='new-text-box'
-                onClick={createAnnotation}
-                disabled={!selectedTextRange || !selectedConcept}
-                minimal
-            />
-            <Button
-                icon='folder-open'
-                minimal
-                onClick={open}
-            />
+            <ExportDialog isOpen={isExportDialogOpen} onClose={closeExportDialog}/>
+            <ImportDialog isOpen={isImportDialogOpen} onClose={closeImportDialog}/>
+
+            <Tooltip content='Add annotation' position={Position.RIGHT}>
+                <AnchorButton
+                    className={c.btn}
+                    icon='new-text-box'
+                    onClick={createAnnotation}
+                    disabled={!selectedTextRange || !selectedConcept}
+                    minimal
+                />
+            </Tooltip>
+
+            <Tooltip content='Open file' position={Position.RIGHT}>
+                <AnchorButton
+                    className={c.btn}
+                    icon='folder-open'
+                    minimal
+                    onClick={open}
+                />
+            </Tooltip>
             <input {...getInputProps()} />
-            <Button
-                icon='floppy-disk'
-                onClick={saveAnnotations}
-                minimal
-                disabled={annotations.length === 0}
-            />
-            <Button
-                icon='export'
-                onClick={openDialog}
-                minimal
-            />
+
+            <Tooltip content='Export data' position={Position.RIGHT}>
+                <AnchorButton
+                    className={c.btn}
+                    icon='export'
+                    onClick={openExportDialog}
+                    minimal
+                />
+            </Tooltip>
+
+            <Tooltip content='Import data' position={Position.RIGHT}>
+                <AnchorButton
+                    className={c.btn}
+                    icon='import'
+                    onClick={openImportDialog}
+                    minimal
+                />
+            </Tooltip>
+
         </div>
     );
 }
