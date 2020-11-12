@@ -1,6 +1,6 @@
 import React from 'react';
 
-function Step2(props) {
+function Step2({foundData, result}) {
     return (
         <div>
 

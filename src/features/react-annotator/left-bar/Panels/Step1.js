@@ -7,21 +7,39 @@ function Step1({openPanel}) {
         const reader = new FileReader();
         reader.addEventListener('load', event => {
             const base64 = event.target.result.split(',')[1];
-            const result = Buffer.from(base64, "base64").toString();
+            const json = Buffer.from(base64, "base64").toString();
 
+            const foundData = [];
+
+            let result;
             try {
-                console.log(JSON.parse(result));
+                result = JSON.parse(json);
             } catch {
-
+                alert("The file doesn't contain a valid JSON.");
             }
 
-            openPanel({component: Step2, props: {}});
+            if (result.text) {
+                foundData.push('text');
+            }
+
+            if (result.annotations) {
+                foundData.push('annotations');
+            }
+
+            if (result.ontology) {
+                foundData.push('ontology');
+            }
+
+            openPanel({component: Step2, props: {foundData, result}});
         });
+
         reader.readAsDataURL(files[0]);
     }
 
     return (
-        <Dropzone onDrop={handleDrop} multiple/>
+        <div style={{display: "flex"}}>
+            <Dropzone onDrop={handleDrop} multiple/>
+        </div>
     );
 }
 

@@ -26,6 +26,7 @@ function ImportSteps() {
     return (
         <PanelStack
             stack={stack}
+            className={c.panelStack}
             showPanelHeader={false}
             onOpen={addToPanelStack}
             onClose={removeFromPanelStack}
@@ -34,7 +35,13 @@ function ImportSteps() {
 }
 
 const useStyles = createUseStyles({
-    root: {}
+    root: {},
+    panelStack: {
+        flexGrow: 1,
+        '& .bp3-panel-stack-view': {
+            position: 'unset', // this fixes the bug, when nothing is shown in the PanelStack view
+        }
+    }
 });
 
 export default ImportSteps;
