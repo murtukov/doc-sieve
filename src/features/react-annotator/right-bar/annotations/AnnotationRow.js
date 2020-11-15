@@ -2,13 +2,14 @@ import React, { useContext } from 'react';
 import { createUseStyles } from "react-jss";
 import {Button, Icon} from "@blueprintjs/core";
 import { WorkspaceContext } from "../../Workspace";
-import { useDispatch } from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import chroma from 'chroma-js';
 
 function AnnotationRow({annotation}) {
     const c = useStyles();
     const {highlighter} = useContext(WorkspaceContext);
     const dispatch = useDispatch();
+    const concepts = useSelector(s => s.app.conceptTree.items);
 
     function removeAnnotation(event) {
         event.stopPropagation();
@@ -60,7 +61,7 @@ function AnnotationRow({annotation}) {
             <Icon
                 className={c.icon}
                 icon='full-circle'
-                color={annotation.data.bgColor}
+                color={concepts[annotation.data.conceptId].data.bgColor}
             />
             <div className={c.quote}>{annotation.quote}</div>
             <Button icon={"cross"} minimal onClick={removeAnnotation}/>
