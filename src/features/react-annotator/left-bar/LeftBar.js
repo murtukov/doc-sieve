@@ -39,7 +39,9 @@ function LeftBar() {
     function createAnnotation() {
         const annotation = {
             ...selectedTextRange,
-            data: selectedConcept
+            data: {
+                conceptId: selectedConcept
+            }
         };
 
         highlighter.current.draw(annotation);

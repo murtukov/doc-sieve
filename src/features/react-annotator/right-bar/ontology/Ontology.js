@@ -22,7 +22,10 @@ function Ontology() {
     }
 
     return <>
-        <CreateDialog isOpen={isDialogOpen} onClose={closeDialog}/>
+        <CreateDialog
+            isOpen={isDialogOpen}
+            onClose={closeDialog}
+        />
         <Block title='Ontology' actions={addNewEntityBtn}>
             <ConceptTree/>
         </Block>

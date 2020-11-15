@@ -6,17 +6,20 @@ import {useDispatch, useSelector} from "react-redux";
 function Item({item, onExpand, onCollapse, provided}) {
     const {selectedConcept} = useSelector(s => s.app)
     const dispatch = useDispatch();
-    const c = useStyles({...item.data, isSelected: selectedConcept?.name === item.data.name});
+    const c = useStyles({
+        ...item.data,
+        isSelected: selectedConcept === item.id
+    });
 
     function handleClick() {
-        dispatch.app.setSelectedConcept(item.data);
+        dispatch.app.setSelectedConcept(item.id);
     }
 
     function removeConcept() {
         if(!window.confirm('Remove the concept?')) {
             return;
         }
-        dispatch.app.removeConcept(item.data.name);
+        dispatch.app.removeConcept(item.id);
     }
 
     return (

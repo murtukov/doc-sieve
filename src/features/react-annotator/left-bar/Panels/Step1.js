@@ -1,6 +1,8 @@
 import React from 'react';
 import Dropzone from "../../sub/Dropzone";
 import Step2 from "./Step2";
+import classes from "classnames";
+import {Classes} from "@blueprintjs/core";
 
 function Step1({openPanel}) {
     function handleDrop(files) {
@@ -37,10 +39,11 @@ function Step1({openPanel}) {
     }
 
     return (
-        <div style={{display: "flex"}}>
+        <div className={Classes.DIALOG_BODY}>
             <Dropzone onDrop={handleDrop} multiple/>
         </div>
     );
 }
+
 
 export default Step1;

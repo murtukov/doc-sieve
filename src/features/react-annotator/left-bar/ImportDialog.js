@@ -1,11 +1,8 @@
 import React from 'react';
 import {Button, Classes, Dialog, H4, Icon} from "@blueprintjs/core";
 import ImportSteps from "./ImportSteps";
-import {createUseStyles} from "react-jss";
-import classes from 'classnames';
 
 function ImportDialog({isOpen, onClose}) {
-    const c = useStyles();
     return (
         <Dialog
             isOpen={isOpen}
@@ -19,17 +16,10 @@ function ImportDialog({isOpen, onClose}) {
                 <Button icon='cross' minimal onClick={onClose}/>
             </div>
 
-            <div className={classes(Classes.DIALOG_BODY, c.dialogBody)}>
-                <ImportSteps/>
-            </div>
+
+            <ImportSteps/>
         </Dialog>
     );
 }
-
-const useStyles = createUseStyles({
-    dialogBody: {
-        display: "flex"
-    }
-});
 
 export default ImportDialog;

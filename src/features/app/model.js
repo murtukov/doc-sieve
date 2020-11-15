@@ -1,4 +1,5 @@
 import {mutateTree} from "@atlaskit/tree";
+import { v4 as uuidv4 } from 'uuid';
 
 const app = {
     state: {
@@ -27,12 +28,14 @@ const app = {
         addConcept: (state, newConcept) => {
             const tree = state.conceptTree;
 
+            const uuid = uuidv4();
+
             const newTree = {
                 rootId: tree.rootId,
                 items: {
                     ...tree.items,
-                    [newConcept.name]: {
-                        id: [newConcept.name],
+                    [uuid]: {
+                        id: uuid,
                         children: [],
                         hasChildren: false,
                         isExpanded: false,
@@ -44,8 +47,7 @@ const app = {
 
             const newChildren = [
                 ...tree.items[newConcept.parentId || 'root'].children,
-                // new child id here
-                newConcept.name
+                uuid
             ];
 
             return ({

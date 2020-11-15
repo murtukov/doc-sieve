@@ -1,6 +1,7 @@
 import $ from 'jquery';
 import {Range} from 'xpath-range';
 import chroma from 'chroma-js';
+import store from "../../rematch";
 
 /**
  * highlightRange wraps the DOM Nodes within the provided range with a highlight
@@ -14,6 +15,7 @@ import chroma from 'chroma-js';
  */
 function highlightRange(normedRange, cssClass, annotation) {
     const white = /^\s*$/;
+    const state = store.getState();
 
     // Ignore text nodes that contain only whitespace characters. This prevents
     // spans being injected between elements that can only contain a restricted
@@ -27,9 +29,12 @@ function highlightRange(normedRange, cssClass, annotation) {
         if (!white.test(node.nodeValue)) {
             const hl = document.createElement('span');
             hl.className = cssClass || 'annotator-hl';
-            // Convert to hex and set to the element
-            hl.style.backgroundColor = chroma(annotation.data.bgColor).alpha(0.5).css();
-            hl.style.color = annotation.data.textColor;
+
+            const bgColor = state.app.conceptTree.items[annotation.data.conceptId].data.bgColor;
+            const textColor = state.app.conceptTree.items[annotation.data.conceptId].data.textColor;
+
+            hl.style.backgroundColor = chroma(bgColor).alpha(0.5).css();
+            hl.style.color = textColor;
             node.parentNode.replaceChild(hl, node);
             hl.appendChild(node);
             results.push(hl);

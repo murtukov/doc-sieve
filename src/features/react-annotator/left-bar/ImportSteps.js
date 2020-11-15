@@ -40,6 +40,7 @@ const useStyles = createUseStyles({
         flexGrow: 1,
         '& .bp3-panel-stack-view': {
             position: 'unset', // this fixes the bug, when nothing is shown in the PanelStack view
+            backgroundColor: 'unset'
         }
     }
 });
