@@ -1,14 +1,14 @@
 import React, {useEffect, useMemo, useState} from 'react';
-import {Button, Callout, Checkbox, Classes, Divider, Intent, Radio, RadioGroup} from "@blueprintjs/core";
-import check from "@atlaskit/icon/glyph/check";
-import {useSelector} from "react-redux";
+import {Button, Callout, Checkbox, Classes, Intent, Radio, RadioGroup} from "@blueprintjs/core";
+import {useDispatch, useSelector} from "react-redux";
 import md5 from "uuid/dist/esm-node/md5";
 import {createUseStyles} from "react-jss";
 
-function Step2({result}) {
+function Step2({result, highlighter, closeDialog}) {
     const c = useStyles();
     const {text} = useSelector(s => s.app);
     const concepts = useSelector(s => s.app.conceptTree.items);
+    const dispatch = useDispatch();
 
     // Checked fields
     const [checked, setChecked] = useState({
@@ -78,8 +78,25 @@ function Step2({result}) {
             atLeastOne = true;
         }
 
-        return violations.wrongText && atLeastOne;
+        return !violations.wrongText && atLeastOne;
     }, [violations, checked]);
+
+    function executeImport() {
+        if (checked.text) {
+            dispatch.app.setText(result.text);
+        }
+
+        if (checked.ontology) {
+            dispatch.app.setConceptTree(result.ontology);
+        }
+
+        if (checked.annotations) {
+            highlighter.current.drawAll(result.annotations);
+            dispatch.app.setAnnotations(result.annotations);
+        }
+
+        closeDialog();
+    }
 
     return <>
         <div className={Classes.DIALOG_BODY}>
@@ -128,7 +145,7 @@ function Step2({result}) {
             {violations &&
                 <>
                     {violations.wrongText &&
-                        <Callout title='Validation error' icon='error'>
+                        <Callout icon='error'>
                             The import data is mean for another text
                         </Callout>
                     }
@@ -148,6 +165,7 @@ function Step2({result}) {
                     text='Import'
                     intent={Intent.SUCCESS}
                     disabled={!canImport}
+                    onClick={executeImport}
                     large
                 />
             </div>

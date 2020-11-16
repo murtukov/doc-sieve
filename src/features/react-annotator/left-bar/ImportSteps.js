@@ -1,13 +1,15 @@
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import {PanelStack} from "@blueprintjs/core";
 import {createUseStyles} from "react-jss";
 import Step1 from "./Panels/Step1";
+import {WorkspaceContext} from "../Workspace";
 
-function ImportSteps() {
+function ImportSteps({closeDialog}) {
     const c = useStyles();
+    const {highlighter} = useContext(WorkspaceContext);
     const [stack, updateStack] = useState([
         {
-            props: {},
+            props: {highlighter, closeDialog},
             component: Step1
         }
     ]);

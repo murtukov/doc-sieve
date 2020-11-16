@@ -90,6 +90,10 @@ const app = {
                 annotations: [...state.annotations, annotation]
             });
         },
+        setAnnotations: (state, annotations) => ({
+            ...state,
+            annotations
+        }),
         removeAnnotation: (state, annotation) => ({
             ...state,
             annotations: state.annotations.filter(a => a.id !== annotation.id)

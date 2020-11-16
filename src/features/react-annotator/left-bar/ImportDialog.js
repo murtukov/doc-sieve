@@ -16,8 +16,7 @@ function ImportDialog({isOpen, onClose}) {
                 <Button icon='cross' minimal onClick={onClose}/>
             </div>
 
-
-            <ImportSteps/>
+            <ImportSteps closeDialog={onClose}/>
         </Dialog>
     );
 }

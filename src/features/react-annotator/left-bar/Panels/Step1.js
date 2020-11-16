@@ -4,7 +4,7 @@ import Step2 from "./Step2";
 import classes from "classnames";
 import {Classes} from "@blueprintjs/core";
 
-function Step1({openPanel}) {
+function Step1({openPanel, highlighter, closeDialog}) {
     function handleDrop(files) {
         const reader = new FileReader();
         reader.addEventListener('load', event => {
@@ -32,7 +32,7 @@ function Step1({openPanel}) {
                 foundData.push('ontology');
             }
 
-            openPanel({component: Step2, props: {foundData, result}});
+            openPanel({component: Step2, props: {highlighter, result, closeDialog}});
         });
 
         reader.readAsDataURL(files[0]);
