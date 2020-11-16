@@ -3,7 +3,6 @@ import { v4 as uuidv4 } from 'uuid';
 
 const app = {
     state: {
-        text: '', // editor text
         selectedConcept: null,
         selectedTextRange: null,
         annotations: [],
@@ -21,7 +20,8 @@ const app = {
                     },
                 },
             },
-        }
+        },
+        text: '', // editor text
     },
     reducers: {
         setText: (state, text) => ({...state, text}),
@@ -120,7 +120,13 @@ function purgeTreeFromItem(items, itemId) {
     Object.keys(items).forEach(i => {
         const index = items[i].children.indexOf(itemId);
         if (index > -1) {
+            debugger;
             items[i].children.splice(index, 1);
+
+            if (items[i].children.length === 0) {
+                items[i].hasChildren = false;
+                items[i].isExpanded = false;
+            }
         }
     });
 }

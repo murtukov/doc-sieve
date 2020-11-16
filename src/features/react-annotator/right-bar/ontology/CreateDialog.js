@@ -7,9 +7,11 @@ function CreateDialog({isOpen, onClose}) {
     const [state, update] = useState({
         name: '',
         description: '',
+        question: '',
         bgColor: 'lightgreen',
         textColor: 'black'
     });
+
     const conceptTree = useSelector(s => s.app.conceptTree);
     const dispatch = useDispatch();
 
@@ -40,15 +42,26 @@ function CreateDialog({isOpen, onClose}) {
             </div>
 
             <div className={Classes.DIALOG_BODY}>
-                <FormGroup label='Name'>
+                <FormGroup label='Name' labelInfo='(required)'>
                     <InputGroup
                         name='name'
+                        required
                         value={state.name}
                         onChange={handleFieldChange}
                     />
                 </FormGroup>
+                <FormGroup label='Related question' labelInfo='(required)'>
+                    <TextArea
+                        fill
+                        required
+                        name='question'
+                        value={state.question}
+                        onChange={handleFieldChange}
+                    />
+                </FormGroup>
                 <FormGroup label='Description'>
-                    <TextArea fill
+                    <TextArea
+                        fill
                         name='description'
                         value={state.description}
                         onChange={handleFieldChange}
@@ -97,6 +110,7 @@ function CreateDialog({isOpen, onClose}) {
                         text='Save'
                         intent={Intent.SUCCESS}
                         onClick={handleSaveClick}
+                        disabled={!state.name || !state.question}
                     />
                 </div>
             </div>
