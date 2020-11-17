@@ -35,6 +35,7 @@ function highlightRange(normedRange, cssClass, annotation) {
 
             hl.style.backgroundColor = chroma(bgColor).alpha(0.5).css();
             hl.style.color = textColor;
+
             node.parentNode.replaceChild(hl, node);
             hl.appendChild(node);
             results.push(hl);

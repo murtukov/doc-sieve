@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from 'react';
 import LeftBar from "./left-bar/LeftBar";
-import sampleText from "../app/sample-text";
 import RightBar from "./right-bar/RightBar";
 import MainLayout from "../../layouts/MainLayout";
 import { createUseStyles } from "react-jss";
@@ -12,10 +11,12 @@ import Highlighter from "../../libs/annotator/ui/highlighter";
 
 export const WorkspaceContext = React.createContext(null);
 
+export const highlighter = React.createRef();
+
 function Workspace() {
     const c = useStyles();
     const annotatorRef = useRef(null);
-    const highlighter = useRef(null);
+    // const highlighter = useRef(null);
     const dispatch = useDispatch();
     const annotations = useSelector(s => s.app.annotations);
     const text = useSelector(s => s.app.text);

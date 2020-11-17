@@ -1,5 +1,6 @@
 import {mutateTree} from "@atlaskit/tree";
 import { v4 as uuidv4 } from 'uuid';
+import {highlighter} from '../react-annotator/Workspace';
 
 const app = {
     state: {
@@ -56,20 +57,13 @@ const app = {
             });
         },
         removeConcept: (state, conceptId) => {
-            const tree = state.conceptTree;
-
-            const newTree = {
-                rootId: tree.rootId,
-                items: {
-                    ...tree.items,
-                },
-            };
-
-            removeTreeBranch(newTree.items, conceptId);
+            const newTree = {...state.conceptTree};
+            const removedConcepts = removeTreeBranch(newTree.items, conceptId);
 
             return ({
                 ...state,
-                conceptTree: mutateTree(newTree, 'root', {})
+                conceptTree: mutateTree(newTree, 'root', {}),
+                annotations: filterAnnotationsByConceptId(state.annotations, removedConcepts)
             });
         },
         setConceptTree: (state, newTree) => ({
@@ -102,16 +96,26 @@ const app = {
     effects: {}
 };
 
-function removeTreeBranch(items, branchId) {
-    const children = items[branchId].children;
+/**
+ * @param {array}  items
+ * @param {string} conceptId
+ * @param {array}  removedConcepts
+ * @return {array}
+ */
+function removeTreeBranch(items, conceptId, removedConcepts = []) {
+    removedConcepts.push(conceptId);
+
+    let children = items[conceptId].children;
 
     // Remove the element itself
-    purgeTreeFromItem(items, branchId);
+    purgeTreeFromItem(items, conceptId);
 
     // Remove it's children
     for (let child of children) {
-        removeTreeBranch(items, child);
+        removeTreeBranch(items, child, removedConcepts);
     }
+
+    return removedConcepts;
 }
 
 function purgeTreeFromItem(items, itemId) {
@@ -120,7 +124,6 @@ function purgeTreeFromItem(items, itemId) {
     Object.keys(items).forEach(i => {
         const index = items[i].children.indexOf(itemId);
         if (index > -1) {
-            debugger;
             items[i].children.splice(index, 1);
 
             if (items[i].children.length === 0) {
@@ -128,6 +131,16 @@ function purgeTreeFromItem(items, itemId) {
                 items[i].isExpanded = false;
             }
         }
+    });
+}
+
+function filterAnnotationsByConceptId(annotations, removedConcepts) {
+    return annotations.filter(a => {
+        if (!removedConcepts.includes(a.data.conceptId)) {
+            return true;
+        }
+        highlighter.current.undraw(a);
+        return false;
     });
 }
 
