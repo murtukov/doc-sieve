@@ -10,6 +10,7 @@ import styles from "./styles";
 function LeftBar() {
     const c = styles();
     const {selectedConcept, selectedTextRange} = useSelector(s => s.app);
+    const concepts = useSelector(s => s.app.conceptTree.items);
     const dispatch = useDispatch();
     const {highlighter} = useContext(WorkspaceContext);
 
@@ -59,7 +60,7 @@ function LeftBar() {
                     className={c.btn}
                     icon='new-text-box'
                     onClick={createAnnotation}
-                    disabled={!selectedTextRange || !selectedConcept}
+                    disabled={!selectedTextRange || !concepts[selectedConcept]}
                     minimal
                 />
             </Tooltip>
