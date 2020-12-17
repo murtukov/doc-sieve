@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import ConceptTree from "../../../tree-example/ConceptTree";
+import ConceptTree from "./concept-tree/ConceptTree";
 import Block from "../Block";
 import {Button, Position, Tooltip} from "@blueprintjs/core";
 import CreateDialog from "./CreateDialog";

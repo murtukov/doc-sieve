@@ -19,7 +19,6 @@ function LeftBar() {
 
     const closeExportDialog = () => setIsExportDialogOpen(false);
     const openExportDialog  = () => setIsExportDialogOpen(true);
-
     const closeImportDialog = () => setIsImportDialogOpen(false);
     const openImportDialog  = () => setIsImportDialogOpen(true);
 

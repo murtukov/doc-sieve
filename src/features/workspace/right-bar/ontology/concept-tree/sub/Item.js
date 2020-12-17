@@ -16,7 +16,7 @@ function Item({item, onExpand, onCollapse, provided}) {
     }
 
     function removeConcept() {
-        if(!window.confirm('Remove the concept?')) {
+        if(!window.confirm('Are you sure you want to remove the concept? It will also remove all related annotations.')) {
             return;
         }
         dispatch.app.removeConcept(item.id);

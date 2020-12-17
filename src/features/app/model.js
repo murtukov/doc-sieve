@@ -1,6 +1,6 @@
 import {mutateTree} from "@atlaskit/tree";
 import { v4 as uuidv4 } from 'uuid';
-import {highlighter} from '../react-annotator/Workspace';
+import {highlighter} from '../workspace/Workspace';
 
 const app = {
     state: {
@@ -13,7 +13,7 @@ const app = {
                 'root': {
                     id: 'root',
                     children: [],
-                    hasChildren: true,
+                    // hasChildren: true,
                     isExpanded: true,
                     isChildrenLoading: false,
                     data: {
@@ -38,7 +38,7 @@ const app = {
                     [uuid]: {
                         id: uuid,
                         children: [],
-                        hasChildren: false,
+                        // hasChildren: false,
                         isExpanded: false,
                         isChildrenLoading: false,
                         data: newConcept,
@@ -127,7 +127,7 @@ function purgeTreeFromItem(items, itemId) {
             items[i].children.splice(index, 1);
 
             if (items[i].children.length === 0) {
-                items[i].hasChildren = false;
+                // items[i].hasChildren = false;
                 items[i].isExpanded = false;
             }
         }

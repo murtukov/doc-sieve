@@ -10,13 +10,11 @@ import { useDispatch, useSelector } from "react-redux";
 import Highlighter from "../../libs/annotator/ui/highlighter";
 
 export const WorkspaceContext = React.createContext(null);
-
 export const highlighter = React.createRef();
 
 function Workspace() {
     const c = useStyles();
     const annotatorRef = useRef(null);
-    // const highlighter = useRef(null);
     const dispatch = useDispatch();
     const annotations = useSelector(s => s.app.annotations);
     const text = useSelector(s => s.app.text);

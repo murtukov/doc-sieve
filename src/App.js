@@ -3,8 +3,7 @@ import {Redirect, Router} from "@reach/router";
 import Wizard from "./features/wizard/Wizard";
 import {Provider} from 'react-redux';
 import store from "./libs/rematch";
-import TreeExample from "./features/tree-example/ConceptTree";
-import Workspace from "./features/react-annotator/Workspace";
+import Workspace from "./features/workspace/Workspace";
 import { PersistGate } from 'redux-persist/integration/react';
 import { getPersistor } from '@rematch/persist';
 
@@ -17,7 +16,6 @@ function App() {
                 <Router>
                     <Redirect from='/' to='editor' noThrow/>
                     <Wizard path='wizard'/>
-                    <TreeExample path='tree-example'/>
                     <Workspace path='editor'/>
                 </Router>
             </PersistGate>
